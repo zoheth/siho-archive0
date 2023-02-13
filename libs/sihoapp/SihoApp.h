@@ -25,14 +25,18 @@ public:
 
 	static SihoApp& get();
 
-	void run(const Config& config, SetupCallback setup, CleanupCallback cleanup,
-		ImGuiCallback imgui = ImGuiCallback(), PreRenderCallback preRender = PreRenderCallback(),
-		PostRenderCallback postRender = PostRenderCallback(),
+	void run(const Config& config, const SetupCallback& setup, CleanupCallback cleanup,
+		ImGuiCallback imgui = ImGuiCallback(), const PreRenderCallback& pre_render = PreRenderCallback(),
+		const PostRenderCallback& post_render = PostRenderCallback(),
 		size_t width = 1024, size_t height = 640);
 private:
 	class CView
 	{
-		
+	public:
+		siho::View* getView() const { return view_; }
+	private:
+		siho::Engine& engine_;
+		siho::View* view_ = nullptr;
 	};
 
 	class Window
@@ -41,12 +45,16 @@ private:
 	public:
 		Window(SihoApp* app, const Config& config, std::string title, size_t w, size_t h);
 		virtual ~Window();
+
+		siho::Renderer* getRenderer() const { return renderer_; }
+
 	private:
 		void configureCamerasForWindow();
 
 		siho::Renderer* renderer_;
 		siho::Camera* camera_;
 
+		std::vector<std::unique_ptr<CView>> views_;
 		CView* main_view_;
 		CView* ui_view_;
 
@@ -64,5 +72,6 @@ private:
 	uint64_t time_ = 0;
 
 	std::string window_title_;
+	std::vector<siho::View*> offscreen_views_;
 
 };
