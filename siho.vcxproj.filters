@@ -69,6 +69,15 @@
     <ClCompile Include="libs\sihoapp\MeshAssimp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="siho\src\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderableManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="siho\include\siho\BufferObject.h">
@@ -131,11 +140,25 @@
     <ClInclude Include="siho\include\siho\LightManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="siho\include\siho\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\utils\Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderableManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="third_party\imgui\.editorconfig" />
     <None Include="third_party\imgui\.gitattributes" />
     <None Include="third_party\imgui\.gitignore" />
+    <None Include="shaders\main.vs" />
+    <None Include="shaders\main.fs" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="third_party\imgui\LICENSE.txt" />

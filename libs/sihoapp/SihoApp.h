@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <GLFW/glfw3.h>
 
 #include <functional>
 #include <memory>
@@ -43,13 +44,14 @@ private:
 	{
 		friend class SihoApp;
 	public:
-		Window(SihoApp* app, const Config& config, std::string title, size_t w, size_t h);
+		Window(SihoApp* app, const Config& config, const std::string& title, int w, int h);
 		virtual ~Window();
 
 		siho::Renderer* getRenderer() const { return renderer_; }
 
 	private:
 		void configureCamerasForWindow();
+		GLFWwindow* window_;
 
 		siho::Renderer* renderer_;
 		siho::Camera* camera_;

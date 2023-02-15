@@ -1,4 +1,7 @@
 ﻿#include "SihoApp.h"
+
+#include <glad/glad.h>
+#include <iostream>
 #include <siho/Renderer.h>
 
 #include <glm/glm.hpp>
@@ -43,6 +46,27 @@ void SihoApp::run(const Config& config, const SetupCallback& setup, CleanupCallb
 
 
 
+}
+
+SihoApp::Window::Window(SihoApp* app, const Config& config, const std::string& title, int w, int h)
+{
+	glfwInit();
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	window_ = glfwCreateWindow(w, h, title.c_str(), nullptr, nullptr);
+	if (window_ == nullptr)
+	{
+		std::cout << "Failed to create GLFW window" << std::endl;
+		glfwTerminate();
+	}
+	glfwMakeContextCurrent(window_);
+
+	if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
+	{
+		std::cout << "Failed to initialize GLAD" << std::endl;
+	}
 }
 
 void SihoApp::Window::configureCamerasForWindow()

@@ -5,6 +5,7 @@
 #include "BufferObject.h"
 #include "Camera.h"
 #include "Material.h"
+#include "MaterialInstance.h"
 #include "Renderer.h"
 #include "Scene.h"
 #include "Texture.h"
@@ -23,6 +24,7 @@ namespace siho
 
 		BufferObject* createBufferObject();
 		VertexBuffer* createVertexBuffer();
+		MaterialInstance* createMaterialInstance();
 		Material* createMaterial();
 		Texture* createTexture();
 

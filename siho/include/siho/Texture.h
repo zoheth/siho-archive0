@@ -1,7 +1,11 @@
 ﻿#pragma once
 
-class Texture
+namespace siho
 {
-public:
-	
-};
+	class Texture
+	{
+	public:
+
+	};
+}
+

@@ -51,15 +51,23 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="PropertySheet.props" />
+    <Import Project="opengl.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="PropertySheet.props" />
+    <Import Project="opengl.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="PropertySheet.props" />
+    <Import Project="opengl.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="PropertySheet.props" />
+    <Import Project="opengl.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -104,7 +112,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="libs\sihoapp\MeshAssimp.h" />
+    <ClInclude Include="libs\utils\Entity.h" />
+    <ClInclude Include="RenderableManager.h" />
     <ClInclude Include="siho\include\siho\BufferObject.h" />
     <ClInclude Include="siho\include\siho\Camera.h" />
     <ClInclude Include="siho\include\siho\Config.h" />
@@ -118,6 +129,7 @@
     <ClInclude Include="siho\include\siho\Texture.h" />
     <ClInclude Include="siho\include\siho\VertexBuffer.h" />
     <ClInclude Include="siho\include\siho\View.h" />
+    <ClInclude Include="siho\include\siho\Shader.h" />
     <ClInclude Include="third_party\imgui\imconfig.h" />
     <ClInclude Include="third_party\imgui\imgui.h" />
     <ClInclude Include="third_party\imgui\imgui_internal.h" />
@@ -126,7 +138,9 @@
     <ClInclude Include="third_party\imgui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="libs\sihoapp\MeshAssimp.cpp" />
+    <ClCompile Include="RenderableManager.cpp" />
     <ClCompile Include="samples\main.cpp" />
     <ClCompile Include="siho\src\BufferObject.cpp" />
     <ClCompile Include="siho\src\Camera.cpp" />
@@ -136,6 +150,7 @@
     <ClCompile Include="siho\src\Renderer.cpp" />
     <ClCompile Include="siho\src\Scene.cpp" />
     <ClCompile Include="libs\sihoapp\SihoApp.cpp" />
+    <ClCompile Include="siho\src\Shader.cpp" />
     <ClCompile Include="siho\src\Texture.cpp" />
     <ClCompile Include="siho\src\VertexBuffer.cpp" />
     <ClCompile Include="siho\src\View.cpp" />
@@ -146,6 +161,8 @@
     <ClCompile Include="third_party\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\main.fs" />
+    <None Include="shaders\main.vs" />
     <None Include="third_party\imgui\.editorconfig" />
     <None Include="third_party\imgui\.gitattributes" />
     <None Include="third_party\imgui\.gitignore" />
