@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include <cstdint>
+#include <string>
 
+#include "Camera.h"
 #include "Scene.h"
 
 namespace siho
@@ -9,6 +11,18 @@ namespace siho
 	{
 	public:
         void setScene(Scene* scene);
+
+        void setName(const std::string& name) noexcept {
+            mName = name;
+        }
+        void setCullingCamera(Camera* camera) noexcept { mCullingCamera = camera; }
+
+
+    private:
+        std::string mName;
+
+        Scene* mScene = nullptr;
+        Camera* mCullingCamera = nullptr;
 	};
 
     struct Viewport {

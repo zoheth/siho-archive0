@@ -1,14 +1,24 @@
 #pragma once
 #include <cstdint>
+#include <unordered_map>
 #include <glm/glm.hpp>
+
+#include "utils/Entity.h"
 
 namespace siho
 {
 	class Engine;
+	struct LightData
+	{
+		
+	};
 	class LightManager
 	{
 		struct BuilderDetails;
 	public:
+
+		bool hasComponent(utils::Entity e) const noexcept;
+
 		//! Denotes the type of the light being created.
 		enum class type : uint8_t {
 			SUN,            //!< Directional light that also draws a sun's disk in the sky.
@@ -33,6 +43,10 @@ namespace siho
 		};
 
 		void create(const LightManager::Builder& builder);
+
+	private:
+		uint32_t mLightCount = 0;
+		std::vector<LightData> mLightArray;
 		
 	};
 }

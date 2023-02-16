@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "Engine.h"
 #include "View.h"
 
 namespace siho
@@ -7,5 +8,6 @@ namespace siho
 	{
 	public:
 		void render(View const* view);
+		Engine* getEngine() noexcept;
 	};
 }

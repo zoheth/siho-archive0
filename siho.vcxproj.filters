@@ -72,10 +72,7 @@
     <ClCompile Include="siho\src\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderableManager.cpp">
+    <ClCompile Include="libs\utils\EntityManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -143,13 +140,10 @@
     <ClInclude Include="siho\include\siho\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="libs\utils\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RenderableManager.h">
+    <ClInclude Include="libs\utils\EntityManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

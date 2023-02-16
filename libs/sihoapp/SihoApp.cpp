@@ -3,11 +3,13 @@
 #include <glad/glad.h>
 #include <iostream>
 #include <siho/Renderer.h>
+#include <siho/Engine.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+using namespace siho;
 
 void SihoApp::run(const Config& config, const SetupCallback& setup, CleanupCallback cleanup, ImGuiCallback imgui, const PreRenderCallback
                   & pre_render, const PostRenderCallback& post_render, const size_t width, const size_t height)
@@ -17,35 +19,42 @@ void SihoApp::run(const Config& config, const SetupCallback& setup, CleanupCallb
 
 	siho::Renderer* renderer = window->getRenderer();
 
-	scene_ = engine_->createScene();
+	mScene = mEngine->createScene();
 
-	for (auto& view : window->views_) {
-		if (view.get() != window->ui_view_) {
-			view->getView()->setScene(scene_);
+	for (auto& view : window->mViews) {
+		if (view.get() != window->mUiView) {
+			view->getView()->setScene(mScene);
 		}
 	}
-	setup(engine_, window->main_view_->getView(), scene_);
+	setup(mEngine, window->mMainView->getView(), mScene);
 
-	while(!closed_)
+	while(!mClosed)
 	{
-		engine_->execute();
+		mEngine->execute();
 		if (pre_render) {
-			pre_render(engine_, window->views_[0]->getView(), scene_, renderer);
+			pre_render(mEngine, window->mViews[0]->getView(), mScene, renderer);
 		}
-		for (const siho::View* offscreen_view : offscreen_views_) {
+		for (const siho::View* offscreen_view : mOffscreenViews) {
 			renderer->render(offscreen_view);
 		}
-		for (auto const& view : window->views_) {
+		for (auto const& view : window->mViews) {
 			renderer->render(view->getView());
 		}
 		if (post_render) {
-			post_render(engine_, window->views_[0]->getView(), scene_, renderer);
+			post_render(mEngine, window->mViews[0]->getView(), mScene, renderer);
 		}
 		//renderer->endFrame();
 	}
 
 
 
+}
+
+SihoApp::CView::CView(siho::Renderer& renderer, std::string name)
+	: mEngine(*renderer.getEngine()), mName(std::move(name))
+{
+	mView = mEngine.createView();
+	mView->setName(name);
 }
 
 SihoApp::Window::Window(SihoApp* app, const Config& config, const std::string& title, int w, int h)
@@ -55,31 +64,44 @@ SihoApp::Window::Window(SihoApp* app, const Config& config, const std::string& t
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	window_ = glfwCreateWindow(w, h, title.c_str(), nullptr, nullptr);
-	if (window_ == nullptr)
+	mWindow = glfwCreateWindow(w, h, title.c_str(), nullptr, nullptr);
+	if (mWindow == nullptr)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 	}
-	glfwMakeContextCurrent(window_);
+	glfwMakeContextCurrent(mWindow);
 
 	if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
 	}
+	mApp->mEngine = Engine::create();
+	mRenderer = mApp->mEngine->createRenderer();
+
+	mCamera = mApp->mEngine->createCamera();
+	mViews.emplace_back(mMainView = new CView(*mRenderer, "Main View"));
+	mMainView->setCamera(mCamera);
+
+	configureCamerasForWindow();
+}
+
+SihoApp::Window::~Window()
+{
 }
 
 void SihoApp::Window::configureCamerasForWindow()
 {
-	const uint32_t width = width_;
-	const uint32_t height = height_;
+	const uint32_t width = mWidth;
+	const uint32_t height = mHeight;
 
 	const glm::vec3 at(0., 0., -4.);
 	const double ratio = static_cast<double>(height) / static_cast<double>(width);
-	const double near = 0.1;
-	const double far = 100;
+	constexpr float near = 0.1f;
+	constexpr float far = 100.f;
+	constexpr float fov = 45.f;
 
-	main->setLensProjection(mFilamentApp->mCameraFocalLength, double(mainWidth) / height, near, far);
+	mCamera->setProjection(fov, static_cast<double>(width) / height, near, far);
 
 }
 

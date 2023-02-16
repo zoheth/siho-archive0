@@ -34,10 +34,15 @@ private:
 	class CView
 	{
 	public:
-		siho::View* getView() const { return view_; }
+		CView(siho::Renderer& renderer, std::string name);
+
+		siho::View* getView() const { return mView; }
+
+		void setCamera(siho::Camera* camera) const { mView->setCullingCamera(camera); }
 	private:
-		siho::Engine& engine_;
-		siho::View* view_ = nullptr;
+		siho::Engine& mEngine;
+		siho::View* mView = nullptr;
+		std::string mName;
 	};
 
 	class Window
@@ -47,33 +52,36 @@ private:
 		Window(SihoApp* app, const Config& config, const std::string& title, int w, int h);
 		virtual ~Window();
 
-		siho::Renderer* getRenderer() const { return renderer_; }
+		siho::Renderer* getRenderer() const { return mRenderer; }
 
 	private:
 		void configureCamerasForWindow();
-		GLFWwindow* window_;
+		SihoApp* const mApp = nullptr;
 
-		siho::Renderer* renderer_;
-		siho::Camera* camera_;
+		GLFWwindow* mWindow;
 
-		std::vector<std::unique_ptr<CView>> views_;
-		CView* main_view_;
-		CView* ui_view_;
+		siho::Renderer* mRenderer;
+		siho::Camera* mCamera;
 
-		size_t width_ = 0;
-		size_t height_ = 0;
-		size_t last_x_ = 0;
-		size_t last_y_ = 0;
+		std::vector<std::unique_ptr<CView>> mViews;
+		CView* mMainView;
+		CView* mUiView;
+
+		size_t mWidth = 0;
+		size_t mHeight = 0;
+		size_t mLastX = 0;
+		size_t mLastY = 0;
 	};
 
 	friend  class Window;
 
-	siho::Engine* engine_ = nullptr;
-	siho::Scene* scene_ = nullptr;
-	bool closed_ = false;
-	uint64_t time_ = 0;
+	siho::Engine* mEngine = nullptr;
+	siho::Scene* mScene = nullptr;
+	bool mClosed = false;
+	uint64_t mTime = 0;
 
-	std::string window_title_;
-	std::vector<siho::View*> offscreen_views_;
+	std::string mWindowTitle;
+	std::vector<siho::View*> mOffscreenViews;
 
+	float mCameraFocalLength = 28.0f;
 };

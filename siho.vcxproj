@@ -112,10 +112,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Entity.h" />
     <ClInclude Include="libs\sihoapp\MeshAssimp.h" />
     <ClInclude Include="libs\utils\Entity.h" />
-    <ClInclude Include="RenderableManager.h" />
+    <ClInclude Include="libs\utils\EntityManager.h" />
     <ClInclude Include="siho\include\siho\BufferObject.h" />
     <ClInclude Include="siho\include\siho\Camera.h" />
     <ClInclude Include="siho\include\siho\Config.h" />
@@ -138,9 +137,8 @@
     <ClInclude Include="third_party\imgui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="libs\sihoapp\MeshAssimp.cpp" />
-    <ClCompile Include="RenderableManager.cpp" />
+    <ClCompile Include="libs\utils\EntityManager.cpp" />
     <ClCompile Include="samples\main.cpp" />
     <ClCompile Include="siho\src\BufferObject.cpp" />
     <ClCompile Include="siho\src\Camera.cpp" />

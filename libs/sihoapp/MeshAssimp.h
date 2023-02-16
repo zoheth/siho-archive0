@@ -32,7 +32,7 @@ public:
         bool override_material = false);
 
     const std::vector<utils::Entity> getRenderables() const noexcept {
-        return renderables_;
+        return mRenderables;
     }
 
 private:
@@ -77,8 +77,8 @@ private:
         int parent_index,
         size_t& depth) const;
 
-    unsigned int vao_, vbo_, ebo_;
-    std::vector<utils::Entity> renderables_;
+    unsigned int mVao, mVbo, mEbo;
+    std::vector<utils::Entity> mRenderables;
 
-    std::vector<siho::Texture*> textures_;
+    std::vector<siho::Texture*> mTextures;
 };
