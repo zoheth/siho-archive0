@@ -6,20 +6,16 @@
 #include <assimp/scene.h>
 
 #include <siho/MaterialInstance.h>
+#include <siho/RenderableManager.h>
 #include <siho/Texture.h>
 #include <utils/Entity.h>
-
 #include "siho/Engine.h"
 
 
-struct Vertex {
-    glm::vec3 position;
-    glm::vec3 normal;
-    glm::vec2 tex_coords;
-    glm::vec3 tangent;
-    glm::vec3 bitangent;
-};
-
+namespace siho
+{
+	struct Vertex;
+}
 
 class MeshAssimp
 {
@@ -57,7 +53,7 @@ private:
     struct Asset {
         std::string file;
         std::vector<uint32_t> indices;
-        std::vector<Vertex> vertices;
+        std::vector<siho::Vertex> vertices;
         std::vector<Mesh> meshes;
         std::vector<int> parents;
     };
@@ -77,6 +73,7 @@ private:
         int parent_index,
         size_t& depth) const;
 
+    siho::Engine& mEngine;
     unsigned int mVao, mVbo, mEbo;
     std::vector<utils::Entity> mRenderables;
 

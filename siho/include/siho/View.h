@@ -10,6 +10,8 @@ namespace siho
 	class View
 	{
 	public:
+        Scene* mScene = nullptr;
+
         void setScene(Scene* scene);
 
         void setName(const std::string& name) noexcept {
@@ -20,8 +22,6 @@ namespace siho
 
     private:
         std::string mName;
-
-        Scene* mScene = nullptr;
         Camera* mCullingCamera = nullptr;
 	};
 

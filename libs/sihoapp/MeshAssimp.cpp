@@ -1,18 +1,43 @@
 ﻿#include "MeshAssimp.h"
 
+#include <GLFW/>
+#include <glad/glad.h>
 #include <functional>
 #include <iostream>
 #include <ostream>
+#include <stb_image.h>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
 #include <assimp/pbrmaterial.h>
 
+#include "utils/EntityManager.h"
+
+using namespace siho;
+using namespace utils;
+
 namespace siho
 {
-	
+    struct Vertex;
 }
+
+
+struct MaterialConfig {
+    bool double_sided = false;
+    bool unlit = false;
+    bool has_vertex_colors = false;
+    float mask_threshold = 0.5f;
+    uint8_t base_color_uv = 0;
+    uint8_t metallic_roughness_uv = 0;
+    uint8_t emissive_uv = 0;
+    uint8_t ao_uv = 0;
+    uint8_t normal_uv = 0;
+
+    uint8_t maxUVIndex() {
+        return std::max({ base_color_uv, metallic_roughness_uv, emissive_uv, ao_uv, normal_uv });
+    }
+};
 
 void MeshAssimp::addFromFile(const std::string& path, std::map<std::string, siho::MaterialInstance*>& materials,
 	bool override_material)
@@ -24,6 +49,25 @@ void MeshAssimp::addFromFile(const std::string& path, std::map<std::string, siho
         return;
     }
 
+    for(auto& mesh:asset.meshes)
+    {
+	    const size_t start_index = mRenderables.size();
+        mRenderables.resize(start_index + mesh.parts.size());
+        EntityManager::get().create(mesh.parts.size(), mRenderables.data() + start_index);
+
+        RenderableManager::Builder builder;
+        size_t part_index = 0;
+        for(auto& part: mesh.parts)
+        {
+            auto it = materials.find(part.material);
+
+            builder.geometry(asset.vertices, asset.indices, part.offset, part.count);
+
+        	builder.material(it != materials.end() ? it->second : nullptr);
+            builder.build(mEngine, mRenderables[start_index + part_index]);
+            ++part_index;
+        }
+    }
 
 
 
@@ -164,166 +208,63 @@ bool MeshAssimp::setFromFile(Asset& asset, std::map<std::string, siho::MaterialI
     return false;
 }
 
-//void MeshAssimp::processGltfMaterial(const aiScene* scene, const aiMaterial* material, const std::string& material_name,
-//	const std::string& dir_name, std::map<std::string, siho::MaterialInstance*>& out_materials) const
-//{
-//
-//    aiString baseColorPath;
-//    aiString AOPath;
-//    aiString MRPath;
-//    aiString normalPath;
-//    aiString emissivePath;
-//    aiTextureMapMode mapMode[3];
-//    MaterialConfig matConfig;
-//
-//    material->Get(AI_MATKEY_TWOSIDED, matConfig.doubleSided);
-//    material->Get(AI_MATKEY_GLTF_UNLIT, matConfig.unlit);
-//
-//    aiString alphaMode;
-//    material->Get(AI_MATKEY_GLTF_ALPHAMODE, alphaMode);
-//    if (strcmp(alphaMode.C_Str(), "BLEND") == 0) {
-//        matConfig.alphaMode = AlphaMode::TRANSPARENT;
-//    }
-//    else if (strcmp(alphaMode.C_Str(), "MASK") == 0) {
-//        matConfig.alphaMode = AlphaMode::MASKED;
-//        float maskThreshold = 0.5;
-//        material->Get(AI_MATKEY_GLTF_ALPHACUTOFF, maskThreshold);
-//        matConfig.maskThreshold = maskThreshold;
-//    }
-//
-//    material->Get(AI_MATKEY_GLTF_TEXTURE_TEXCOORD_BASE, AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_BASE_COLOR_TEXTURE,
-//        matConfig.baseColorUV);
-//    material->Get(_AI_MATKEY_GLTF_TEXTURE_TEXCOORD_BASE, AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLICROUGHNESS_TEXTURE,
-//        matConfig.metallicRoughnessUV);
-//    material->Get(_AI_MATKEY_GLTF_TEXTURE_TEXCOORD_BASE, aiTextureType_LIGHTMAP, 0, matConfig.aoUV);
-//    material->Get(_AI_MATKEY_GLTF_TEXTURE_TEXCOORD_BASE, aiTextureType_NORMALS, 0, matConfig.normalUV);
-//    material->Get(_AI_MATKEY_GLTF_TEXTURE_TEXCOORD_BASE, aiTextureType_EMISSIVE, 0, matConfig.emissiveUV);
-//
-//    uint64_t configHash = hashMaterialConfig(matConfig);
-//
-//    if (mGltfMaterialCache.find(configHash) == mGltfMaterialCache.end()) {
-//        mGltfMaterialCache[configHash] = createMaterialFromConfig(mEngine, matConfig);
-//    }
-//
-//    outMaterials[materialName] = mGltfMaterialCache[configHash]->createInstance();
-//
-//    // TODO: is there a way to use the same material for multiple mask threshold values?
-////    if (matConfig.alphaMode == masked) {
-////        float maskThreshold = 0.5;
-////        material->Get(AI_MATKEY_GLTF_ALPHACUTOFF, maskThreshold);
-////        outMaterials[materialName]->setParameter("maskThreshold", maskThreshold);
-////    }
-//
-//    // Load property values for gltf files
-//    aiColor4D baseColorFactor;
-//    aiColor3D emissiveFactor;
-//    float metallicFactor = 1.0;
-//    float roughnessFactor = 1.0;
-//
-//    // TODO: is occlusion strength available on Assimp now?
-//
-//    // Load texture images for gltf files
-//    TextureSampler sampler(
-//        TextureSampler::MinFilter::LINEAR_MIPMAP_LINEAR,
-//        TextureSampler::MagFilter::LINEAR,
-//        TextureSampler::WrapMode::REPEAT);
-//
-//    if (material->GetTexture(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_BASE_COLOR_TEXTURE, &baseColorPath,
-//        nullptr, nullptr, nullptr, nullptr, mapMode) == AI_SUCCESS) {
-//        unsigned int minType = 0;
-//        unsigned int magType = 0;
-//        material->Get("$tex.mappingfiltermin", AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_BASE_COLOR_TEXTURE, minType);
-//        material->Get("$tex.mappingfiltermag", AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_BASE_COLOR_TEXTURE, magType);
-//
-//        setTextureFromPath(scene, &mEngine, mTextures, baseColorPath,
-//            materialName, dirName, mapMode, "baseColorMap", outMaterials, minType, magType);
-//    }
-//    else {
-//        outMaterials[materialName]->setParameter("baseColorMap", mDefaultMap, sampler);
-//    }
-//
-//    if (material->GetTexture(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLICROUGHNESS_TEXTURE, &MRPath,
-//        nullptr, nullptr, nullptr, nullptr, mapMode) == AI_SUCCESS) {
-//        unsigned int minType = 0;
-//        unsigned int magType = 0;
-//        material->Get("$tex.mappingfiltermin", AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLICROUGHNESS_TEXTURE, minType);
-//        material->Get("$tex.mappingfiltermag", AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLICROUGHNESS_TEXTURE, magType);
-//
-//        setTextureFromPath(scene, &mEngine, mTextures, MRPath, materialName,
-//            dirName, mapMode, "metallicRoughnessMap", outMaterials, minType, magType);
-//    }
-//    else {
-//        outMaterials[materialName]->setParameter("metallicRoughnessMap", mDefaultMap, sampler);
-//        outMaterials[materialName]->setParameter("metallicFactor", mDefaultMetallic);
-//        outMaterials[materialName]->setParameter("roughnessFactor", mDefaultRoughness);
-//    }
-//
-//    if (material->GetTexture(aiTextureType_LIGHTMAP, 0, &AOPath, nullptr,
-//        nullptr, nullptr, nullptr, mapMode) == AI_SUCCESS) {
-//        unsigned int minType = 0;
-//        unsigned int magType = 0;
-//        material->Get("$tex.mappingfiltermin", aiTextureType_LIGHTMAP, 0, minType);
-//        material->Get("$tex.mappingfiltermag", aiTextureType_LIGHTMAP, 0, magType);
-//        setTextureFromPath(scene, &mEngine, mTextures, AOPath, materialName,
-//            dirName, mapMode, "aoMap", outMaterials, minType, magType);
-//    }
-//    else {
-//        outMaterials[materialName]->setParameter("aoMap", mDefaultMap, sampler);
-//    }
-//
-//    if (material->GetTexture(aiTextureType_NORMALS, 0, &normalPath, nullptr,
-//        nullptr, nullptr, nullptr, mapMode) == AI_SUCCESS) {
-//        unsigned int minType = 0;
-//        unsigned int magType = 0;
-//        material->Get("$tex.mappingfiltermin", aiTextureType_NORMALS, 0, minType);
-//        material->Get("$tex.mappingfiltermag", aiTextureType_NORMALS, 0, magType);
-//        setTextureFromPath(scene, &mEngine, mTextures, normalPath, materialName,
-//            dirName, mapMode, "normalMap", outMaterials, minType, magType);
-//    }
-//    else {
-//        outMaterials[materialName]->setParameter("normalMap", mDefaultNormalMap, sampler);
-//    }
-//
-//    if (material->GetTexture(aiTextureType_EMISSIVE, 0, &emissivePath, nullptr,
-//        nullptr, nullptr, nullptr, mapMode) == AI_SUCCESS) {
-//        unsigned int minType = 0;
-//        unsigned int magType = 0;
-//        material->Get("$tex.mappingfiltermin", aiTextureType_EMISSIVE, 0, minType);
-//        material->Get("$tex.mappingfiltermag", aiTextureType_EMISSIVE, 0, magType);
-//        setTextureFromPath(scene, &mEngine, mTextures, emissivePath, materialName,
-//            dirName, mapMode, "emissiveMap", outMaterials, minType, magType);
-//    }
-//    else {
-//        outMaterials[materialName]->setParameter("emissiveMap", mDefaultMap, sampler);
-//        outMaterials[materialName]->setParameter("emissiveFactor", mDefaultEmissive);
-//    }
-//
-//    //If the gltf has texture factors, override the default factor values
-//    if (material->Get(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLIC_FACTOR, metallicFactor) == AI_SUCCESS) {
-//        outMaterials[materialName]->setParameter("metallicFactor", metallicFactor);
-//    }
-//
-//    if (material->Get(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_ROUGHNESS_FACTOR, roughnessFactor) == AI_SUCCESS) {
-//        outMaterials[materialName]->setParameter("roughnessFactor", roughnessFactor);
-//    }
-//
-//    if (material->Get(AI_MATKEY_COLOR_EMISSIVE, emissiveFactor) == AI_SUCCESS) {
-//        sRGBColor emissiveFactorCast = *reinterpret_cast<sRGBColor*>(&emissiveFactor);
-//        outMaterials[materialName]->setParameter("emissiveFactor", emissiveFactorCast);
-//    }
-//
-//    if (material->Get(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_BASE_COLOR_FACTOR, baseColorFactor) == AI_SUCCESS) {
-//        sRGBColorA baseColorFactorCast = *reinterpret_cast<sRGBColorA*>(&baseColorFactor);
-//        outMaterials[materialName]->setParameter("baseColorFactor", baseColorFactorCast);
-//    }
-//
-//    aiBool isSpecularGlossiness = false;
-//    if (material->Get(AI_MATKEY_GLTF_PBRSPECULARGLOSSINESS, isSpecularGlossiness) == AI_SUCCESS) {
-//        if (isSpecularGlossiness) {
-//            std::cout << "Warning: pbrSpecularGlossiness textures are not currently supported" << std::endl;
-//        }
-//    }
-//}
+void setTextureFromPath(Engine* engine,
+    const aiString& texture_file,
+    const std::string& material_name, const std::string& texture_directory,
+    const char* parameter_name,
+    std::map<std::string, MaterialInstance*>& out_materials, const bool gamma = false
+)
+{
+    const auto filename = texture_directory + '\\' + std::string(texture_file.C_Str());
+    auto it = engine->mResourcePaths.find(filename);
+    if (it != engine->mResourcePaths.end())
+    {
+        out_materials[material_name]->setParameter(parameter_name, it->second);
+        return;
+    }
+
+    uint32_t textureID;
+    glGenTextures(1, &textureID);
+
+    int width, height, nrComponents;
+    unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
+    if (data)
+    {
+        GLenum internal_format;
+        GLenum data_format;
+        if (nrComponents == 1)
+            internal_format = data_format = GL_RED;
+        else if (nrComponents == 3)
+        {
+            internal_format = gamma ? GL_SRGB : GL_RGB;
+            data_format = GL_RGB;
+        }
+        else if (nrComponents == 4)
+        {
+            internal_format = gamma ? GL_SRGB_ALPHA : GL_RGBA;
+            data_format = GL_RGBA;
+        }
+
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, internal_format, width, height, 0, data_format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_image_free(data);
+    }
+    else
+    {
+        std::cout << "Texture failed to load at path: " << filename << std::endl;
+        stbi_image_free(data);
+    }
+
+    out_materials[material_name]->setParameter(parameter_name, textureID);
+    engine->mResourcePaths.insert({ filename,textureID });
+}
 
 void MeshAssimp::processNode(Asset& asset, std::map<std::string, siho::MaterialInstance*>& out_materials,
                              const aiScene* scene, bool is_gltf, size_t deep, size_t mat_count, const aiNode* node, int parent_index, size_t& depth) const
@@ -382,9 +323,9 @@ void MeshAssimp::processNode(Asset& asset, std::map<std::string, siho::MaterialI
 
                 // Populate the index buffer. All faces are triangles at this point because we
                 // asked assimp to perform triangulation.
-                size_t indicesCount = num_faces * faces[0].mNumIndices;
-                size_t indexBufferOffset = asset.indices.size();
-                total_indices += indicesCount;
+                size_t indices_count = num_faces * faces[0].mNumIndices;
+                size_t index_buffer_offset = asset.indices.size();
+                total_indices += indices_count;
 
                 for (size_t j = 0; j < num_faces; ++j) {
                     const aiFace& face = faces[j];
@@ -393,11 +334,13 @@ void MeshAssimp::processNode(Asset& asset, std::map<std::string, siho::MaterialI
                     }
                 }
 
-                uint32_t materialId = mesh->mMaterialIndex;
-                aiMaterial const* material = scene->mMaterials[materialId];
+                uint32_t material_id = mesh->mMaterialIndex;
+                aiMaterial const* material = scene->mMaterials[material_id];
 
                 aiString name;
                 std::string material_name;
+
+                
 
                 if (material->Get(AI_MATKEY_NAME, name) != AI_SUCCESS) {
                     if (is_gltf) {
@@ -419,6 +362,12 @@ void MeshAssimp::processNode(Asset& asset, std::map<std::string, siho::MaterialI
                     std::string dir_name = asset.file.getParent();
                     processGltfMaterial(scene, material, material_name, dir_name, out_materials);
                 }*/
+
+                aiString diffuse_path;
+                if (material->GetTexture(aiTextureType_DIFFUSE, 0, &diffuse_path))
+                {
+                    setTextureFromPath(&mEngine, diffuse_path, material_name, "", "diffuse_map",out_materials);
+                }
 
                 aiColor3D color;
                 glm::vec3 base_color{ 1.0f };
@@ -460,8 +409,9 @@ void MeshAssimp::processNode(Asset& asset, std::map<std::string, siho::MaterialI
                     }
                 }
 
+
                 asset.meshes.back().parts.push_back({
-                        indexBufferOffset, indicesCount, material_name,
+                        index_buffer_offset, indices_count, material_name,
                         base_color, opacity, metallic, roughness, reflectance
                     });
             }

@@ -1,11 +1,13 @@
 #pragma once
 
 #include <vector>
+#include <unordered_map>
 
 #include "BufferObject.h"
 #include "Camera.h"
 #include "Material.h"
 #include "MaterialInstance.h"
+#include "RenderableManager.h"
 #include "Renderer.h"
 #include "Scene.h"
 #include "Texture.h"
@@ -13,12 +15,17 @@
 #include "View.h"
 
 using std::vector;
+using std::unordered_map;
 
 namespace siho
 {
+	class MaterialInstance;
+
 	class Engine
 	{
 	public:
+		unordered_map<std::string, uint32_t> mResourcePaths;
+
 		static Engine* create();
 		static void destroy(Engine* engine);
 
@@ -35,19 +42,19 @@ namespace siho
 
 		Camera* createCamera();
 
+		void createRenderable(const RenderableManager::Builder& builder, utils::Entity entity);
+
 		void flush();
 		bool execute();
 
 	private:
-		VertexBuffer* triangle_vb_ = nullptr;
-		vector<BufferObject> buffer_objects_;
-		vector<Renderer> renderers_;
-		vector<View> views_;
-		vector<VertexBuffer> vertex_buffers_;
-		vector<Material> materials_;
-		vector<Texture> textures_;
-		
-
+		VertexBuffer* mTriangleVb = nullptr;
+		vector<BufferObject> mBufferObjects;
+		vector<Renderer> mRenderers;
+		vector<View> mViews;
+		vector<VertexBuffer> mVertexBuffers;
+		vector<Material> mMaterials;
+		vector<Texture> mTextures;
 
 	};
 }

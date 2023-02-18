@@ -1,7 +1,10 @@
 ﻿#pragma once
 
-class VertexBuffer
+namespace siho
 {
-public:
-	
-};
+	class VertexBuffer
+	{
+
+	};
+
+}

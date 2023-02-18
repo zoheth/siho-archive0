@@ -16,4 +16,5 @@ void EntityManager::create(size_t n, Entity* entities)
 		entities[i] = Entity{ current_index };
 		++current_index;
 	}
+	mCurrentIndex += n;
 }
