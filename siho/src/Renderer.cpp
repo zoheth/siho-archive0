@@ -3,8 +3,19 @@
 
 using namespace siho;
 
+
+Renderer::Renderer(Engine& engine):
+	mEngine(engine)
+{
+}
+
+void Renderer::prepare()
+{
+	
+}
+
 void siho::Renderer::render(View const* view)
 {
-	Scene& scene= *view->mScene;
-	scene
+	const Scene& scene = *view->mScene;
+	Camera& camera = *view->mCullingCamera;
 }

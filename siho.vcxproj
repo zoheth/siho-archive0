@@ -117,6 +117,7 @@
     <ClInclude Include="libs\utils\EntityManager.h" />
     <ClInclude Include="siho\include\siho\BufferObject.h" />
     <ClInclude Include="siho\include\siho\Camera.h" />
+    <ClInclude Include="siho\include\siho\CameraManager.h" />
     <ClInclude Include="siho\include\siho\Config.h" />
     <ClInclude Include="siho\include\siho\Engine.h" />
     <ClInclude Include="siho\include\siho\IndexBuffer.h" />
@@ -144,6 +145,8 @@
     <ClCompile Include="samples\main.cpp" />
     <ClCompile Include="siho\src\BufferObject.cpp" />
     <ClCompile Include="siho\src\Camera.cpp" />
+    <ClCompile Include="siho\src\components\CameraManager.cpp" />
+    <ClCompile Include="siho\src\components\LightManager.cpp" />
     <ClCompile Include="siho\src\components\RenderableManager.cpp" />
     <ClCompile Include="siho\src\Config.cpp" />
     <ClCompile Include="siho\src\Engine.cpp" />

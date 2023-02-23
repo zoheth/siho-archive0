@@ -4,8 +4,8 @@ using namespace utils;
 
 EntityManager& EntityManager::get()
 {
-	static auto* instance = new EntityManager;
-	return *instance;
+	static EntityManager instance;
+	return instance;
 }
 
 void EntityManager::create(size_t n, Entity* entities)

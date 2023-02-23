@@ -45,6 +45,9 @@ private:
 		std::string mName;
 	};
 
+	/**
+	 * Window is a wrapper around a glfw window, a renderer, a main view and a ui view.
+	 */
 	class Window
 	{
 		friend class SihoApp;
@@ -61,6 +64,8 @@ private:
 		GLFWwindow* mWindow;
 
 		siho::Renderer* mRenderer;
+
+		utils::Entity mCameraEntity;
 		siho::Camera* mCamera;
 
 		std::vector<std::unique_ptr<CView>> mViews;

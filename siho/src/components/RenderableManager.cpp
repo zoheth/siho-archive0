@@ -8,6 +8,22 @@
 using namespace siho;
 using namespace utils;
 
+RenderableManager& RenderableManager::get()
+{
+	static RenderableManager instance;
+	return instance;
+}
+
+Renderable* RenderableManager::getRenderable(utils::Entity entity)
+{
+	const auto it = mRenderables.find(entity.getId());
+	if(it != mRenderables.end())
+	{
+		return &it->second;
+	}
+	return nullptr;
+}
+
 RenderableManager::Builder& RenderableManager::Builder::geometry(const std::vector<Vertex>& vertices,
                                                                  const std::vector<uint32_t>& indices, size_t offset, size_t count)
 {

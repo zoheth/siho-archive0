@@ -19,6 +19,9 @@ namespace siho {
         glm::mat4 getViewMatrix() const noexcept;
 
     private:
+        Engine& mEngine;
+        utils::Entity mEntity;
+
         glm::mat4 mProjection;
         glm::mat4 mProjectionForCulling;
         glm::vec3 mPosition;

@@ -10,7 +10,10 @@ namespace siho
 	class View
 	{
 	public:
+        explicit View(Engine& engine);
+
         Scene* mScene = nullptr;
+        Camera* mCullingCamera = nullptr;
 
         void setScene(Scene* scene);
 
@@ -22,7 +25,6 @@ namespace siho
 
     private:
         std::string mName;
-        Camera* mCullingCamera = nullptr;
 	};
 
     struct Viewport {

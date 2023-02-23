@@ -1,6 +1,12 @@
 ﻿#include <glm/gtc/matrix_transform.hpp>
 #include <siho/Camera.h>
 
+siho::Camera::Camera(Engine& engine, utils::Entity e)
+	: mEngine(engine), mEntity(e)
+{
+
+}
+
 void siho::Camera::setProjection(double fovInDegrees, double aspect, double near, double far)
 {
 	mNear = near;

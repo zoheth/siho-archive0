@@ -5,10 +5,9 @@
 
 #include "BufferObject.h"
 #include "Camera.h"
-#include "Material.h"
-#include "MaterialInstance.h"
 #include "RenderableManager.h"
-#include "Renderer.h"
+#include "LightManager.h"
+#include "CameraManager.h"
 #include "Scene.h"
 #include "Texture.h"
 #include "VertexBuffer.h"
@@ -19,7 +18,9 @@ using std::unordered_map;
 
 namespace siho
 {
+	class Material;
 	class MaterialInstance;
+	class Renderer;
 
 	class Engine
 	{
@@ -31,7 +32,8 @@ namespace siho
 
 		BufferObject* createBufferObject();
 		VertexBuffer* createVertexBuffer();
-		MaterialInstance* createMaterialInstance();
+		MaterialInstance* createMaterialInstance(const Material* material,
+			const MaterialInstance* other, const char* name) noexcept;
 		Material* createMaterial();
 		Texture* createTexture();
 
@@ -40,7 +42,7 @@ namespace siho
 		Scene* createScene();
 		View* createView();
 
-		Camera* createCamera();
+		Camera* createCamera(utils::Entity entity);
 
 		void createRenderable(const RenderableManager::Builder& builder, utils::Entity entity);
 
@@ -48,6 +50,13 @@ namespace siho
 		bool execute();
 
 	private:
+		Engine();
+
+		utils::EntityManager& mEntityManager;
+		RenderableManager mRenderableManager;
+		LightManager mLightManager;
+		CameraManager mCameraManager;
+
 		VertexBuffer* mTriangleVb = nullptr;
 		vector<BufferObject> mBufferObjects;
 		vector<Renderer> mRenderers;

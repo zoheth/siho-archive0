@@ -9,6 +9,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "utils/EntityManager.h"
+
 using namespace siho;
 
 void SihoApp::run(const Config& config, const SetupCallback& setup, CleanupCallback cleanup, ImGuiCallback imgui, const PreRenderCallback
@@ -79,7 +81,8 @@ SihoApp::Window::Window(SihoApp* app, const Config& config, const std::string& t
 	mApp->mEngine = Engine::create();
 	mRenderer = mApp->mEngine->createRenderer();
 
-	mCamera = mApp->mEngine->createCamera();
+	utils::EntityManager::get().create(1, &mCameraEntity);
+	mCamera = mApp->mEngine->createCamera(mCameraEntity);
 	mViews.emplace_back(mMainView = new CView(*mRenderer, "Main View"));
 	mMainView->setCamera(mCamera);
 

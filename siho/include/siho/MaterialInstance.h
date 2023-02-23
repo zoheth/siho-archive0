@@ -1,11 +1,12 @@
 #pragma once
+#include <string>
+
 #include "Engine.h"
+#include "Material.h"
 
 namespace siho
 {
-    class Material;
-
-    class MaterialInstance {
+	class MaterialInstance {
     public:
         MaterialInstance(Engine& engine, MaterialInstance const* other, const char* name);
         MaterialInstance(Engine& engine, Material const* material, const char* name);
@@ -25,8 +26,6 @@ namespace siho
         template<typename T>
         void setParameter(const char* name, const T& value) noexcept;
 
-        void setParameter(const char* name, Texture const* texture) noexcept;
-
 
         void setScissor(int32_t left, int32_t bottom, uint32_t width, uint32_t height) noexcept;
 
@@ -42,7 +41,6 @@ namespace siho
 
         void setDoubleSided(bool doubleSided) noexcept;
 
-        void setCullingMode(CullingMode culling) noexcept;
 
         void setColorWrite(bool enable) noexcept;
 
@@ -54,9 +52,6 @@ namespace siho
         void setShadowMultiplier(bool shadowMultiplier) noexcept;
 
         void setSpecularAntiAliasing(bool specularAntiAliasing) noexcept;
-
-
-        CullingMode getCullingMode() const noexcept { return mCullingMode; }
 
 
         float getMaskThreshold() const noexcept { return mMaskThreshold; }
@@ -76,7 +71,6 @@ namespace siho
         float mMaskThreshold = 0.4f;
         float mSpecularAntiAliasingVariance = 0.0f;
         float mSpecularAntiAliasingThreshold = 0.0f;
-        CullingMode mCullingMode = CullingMode::BACK;
     };
 
     inline MaterialInstance* MaterialInstance::duplicate(MaterialInstance const* other, const char* name) noexcept

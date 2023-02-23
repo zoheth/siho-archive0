@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "Engine.h"
-#include "MaterialInstance.h"
 
 // 枚举类型，表示材质的反射模式
 enum class ReflectionMode {
@@ -18,6 +17,8 @@ enum class CullingMode : uint8_t {
 };
 
 namespace siho {
+    class MaterialInstance;
+
     class Material {
     public:
         Material(Engine& engine, MaterialInstance const* mi);
