@@ -34,7 +34,7 @@ private:
 	class CView
 	{
 	public:
-		CView(siho::Renderer& renderer, std::string name);
+		CView(siho::Renderer& renderer, const std::string& name);
 
 		siho::View* getView() const { return mView; }
 

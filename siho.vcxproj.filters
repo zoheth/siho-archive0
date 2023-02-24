@@ -84,6 +84,9 @@
     <ClCompile Include="siho\src\components\CameraManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="siho\src\PerViewUniforms.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="siho\include\siho\BufferObject.h">
@@ -162,6 +165,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="siho\include\siho\CameraManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="siho\src\PerViewUniforms.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

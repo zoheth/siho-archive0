@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Camera.h"
+#include "../src/PerViewUniforms.h"
 #include "Scene.h"
 
 namespace siho
@@ -11,9 +12,6 @@ namespace siho
 	{
 	public:
         explicit View(Engine& engine);
-
-        Scene* mScene = nullptr;
-        Camera* mCullingCamera = nullptr;
 
         void setScene(Scene* scene);
 
@@ -25,6 +23,11 @@ namespace siho
 
     private:
         std::string mName;
+        mutable PerViewUniforms mPerViewUniforms;
+
+        Scene* mScene = nullptr;
+        Camera* mCullingCamera = nullptr;
+
 	};
 
     struct Viewport {

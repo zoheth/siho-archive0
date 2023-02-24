@@ -132,6 +132,7 @@
     <ClInclude Include="siho\include\siho\VertexBuffer.h" />
     <ClInclude Include="siho\include\siho\View.h" />
     <ClInclude Include="siho\include\siho\Shader.h" />
+    <ClInclude Include="siho\src\PerViewUniforms.h" />
     <ClInclude Include="third_party\imgui\imconfig.h" />
     <ClInclude Include="third_party\imgui\imgui.h" />
     <ClInclude Include="third_party\imgui\imgui_internal.h" />
@@ -151,6 +152,7 @@
     <ClCompile Include="siho\src\Config.cpp" />
     <ClCompile Include="siho\src\Engine.cpp" />
     <ClCompile Include="siho\src\Material.cpp" />
+    <ClCompile Include="siho\src\PerViewUniforms.cpp" />
     <ClCompile Include="siho\src\Renderer.cpp" />
     <ClCompile Include="siho\src\Scene.cpp" />
     <ClCompile Include="libs\sihoapp\SihoApp.cpp" />

@@ -16,10 +16,17 @@ using namespace siho;
 void SihoApp::run(const Config& config, const SetupCallback& setup, CleanupCallback cleanup, ImGuiCallback imgui, const PreRenderCallback
                   & pre_render, const PostRenderCallback& post_render, const size_t width, const size_t height)
 {
-
+	/**
+	 * app
+	 * └----engine(m)
+	 *	       ├-----renderer(m)
+	 *         ├-----main view(m)
+	 *		             ├-----camera(m)
+	 * 
+	 */
 	std::unique_ptr<SihoApp::Window> window(new SihoApp::Window(this, config, "Siho", width, height));
 
-	siho::Renderer* renderer = window->getRenderer();
+	Renderer* renderer = window->getRenderer();
 
 	mScene = mEngine->createScene();
 
@@ -52,8 +59,8 @@ void SihoApp::run(const Config& config, const SetupCallback& setup, CleanupCallb
 
 }
 
-SihoApp::CView::CView(siho::Renderer& renderer, std::string name)
-	: mEngine(*renderer.getEngine()), mName(std::move(name))
+SihoApp::CView::CView(siho::Renderer& renderer, const std::string& name)
+	: mEngine(*renderer.getEngine()), mName(name)
 {
 	mView = mEngine.createView();
 	mView->setName(name);

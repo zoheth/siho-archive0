@@ -61,6 +61,7 @@ namespace siho
 		vector<BufferObject> mBufferObjects;
 		vector<Renderer> mRenderers;
 		vector<View> mViews;
+		vector<Scene> mScenes;
 		vector<VertexBuffer> mVertexBuffers;
 		vector<Material> mMaterials;
 		vector<Texture> mTextures;

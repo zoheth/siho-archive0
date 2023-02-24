@@ -1,6 +1,5 @@
 ﻿#include "MeshAssimp.h"
 
-#include <GLFW/>
 #include <glad/glad.h>
 #include <functional>
 #include <iostream>

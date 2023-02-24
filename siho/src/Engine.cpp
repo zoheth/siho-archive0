@@ -12,7 +12,7 @@ Engine* Engine::create()
 	return instance;
 }
 
-void siho::Engine::destroy(Engine* engine)
+void Engine::destroy(Engine* engine)
 {
 }
 
@@ -22,27 +22,29 @@ MaterialInstance* Engine::createMaterialInstance(const Material* material, const
     
 }
 
-siho::Renderer* siho::Engine::createRenderer()
+Renderer* Engine::createRenderer()
 {
 	mRenderers.emplace_back(*this);
 	return &mRenderers.back();
 }
 
-View* Engine::createView()
+Scene* Engine::createScene()
 {
-	mViews.push_back(new View())
+	mScenes.emplace_back(*this);
+	return &mScenes.back();
 }
 
-Camera* siho::Engine::createCamera(Entity entity)
+View* Engine::createView()
+{
+	mViews.push_back(*new View(*this));
+}
+
+Camera* Engine::createCamera(const Entity entity)
 {
 	return mCameraManager.create(entity);
 }
 
-bool siho::Engine::execute()
+bool Engine::execute()
 {
 
-}
-
-siho::Engine::~Engine() noexcept
-{
 }
