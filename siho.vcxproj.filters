@@ -87,6 +87,9 @@
     <ClCompile Include="siho\src\PerViewUniforms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="siho\src\MaterialInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="siho\include\siho\BufferObject.h">
@@ -149,7 +152,7 @@
     <ClInclude Include="siho\include\siho\LightManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="siho\include\siho\Shader.h">
+    <ClInclude Include="siho\src\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="libs\utils\Entity.h">

@@ -15,10 +15,8 @@ namespace siho
         static MaterialInstance* duplicate(MaterialInstance const* other, const char* name) noexcept;
 
         // frees driver resources, object becomes invalid
-        void terminate(Engine& engine);
-
-        void commit(Engine& engine) noexcept;
-
+        void bind(Engine& engine);
+        void unbind(Engine& engine) noexcept;
 
         Material const* getMaterial() const noexcept { return mMaterial; }
 
@@ -27,38 +25,6 @@ namespace siho
         void setParameter(const char* name, const T& value) noexcept;
 
 
-        void setScissor(int32_t left, int32_t bottom, uint32_t width, uint32_t height) noexcept;
-
-        void unsetScissor() noexcept;
-
-        void setPolygonOffset(float scale, float constant) noexcept;
-
-        void setMaskThreshold(float threshold) noexcept;
-
-        void setSpecularAntiAliasingVariance(float variance) noexcept;
-
-        void setSpecularAntiAliasingThreshold(float threshold) noexcept;
-
-        void setDoubleSided(bool doubleSided) noexcept;
-
-
-        void setColorWrite(bool enable) noexcept;
-
-        void setDepthWrite(bool enable) noexcept;
-
-        void setDepthCulling(bool enable) noexcept;
-
-
-        void setShadowMultiplier(bool shadowMultiplier) noexcept;
-
-        void setSpecularAntiAliasing(bool specularAntiAliasing) noexcept;
-
-
-        float getMaskThreshold() const noexcept { return mMaskThreshold; }
-
-        float getSpecularAntiAliasingVariance() const noexcept { return mSpecularAntiAliasingVariance; }
-
-        float getSpecularAntiAliasingThreshold() const noexcept { return mSpecularAntiAliasingThreshold; }
 
         const char* getName() const noexcept { return mName.c_str(); }
 
@@ -68,9 +34,6 @@ namespace siho
 
         Material const* mMaterial;
         std::string mName;
-        float mMaskThreshold = 0.4f;
-        float mSpecularAntiAliasingVariance = 0.0f;
-        float mSpecularAntiAliasingThreshold = 0.0f;
     };
 
     inline MaterialInstance* MaterialInstance::duplicate(MaterialInstance const* other, const char* name) noexcept

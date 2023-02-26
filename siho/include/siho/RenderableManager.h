@@ -34,6 +34,7 @@ namespace siho
 	{
 	public:
 		static RenderableManager& get();
+		void create();
 		Renderable* getRenderable(utils::Entity entity);
 		class Builder
 		{

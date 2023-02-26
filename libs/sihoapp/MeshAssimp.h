@@ -74,7 +74,8 @@ private:
         size_t& depth) const;
 
     siho::Engine& mEngine;
-    unsigned int mVao, mVbo, mEbo;
+    siho::Material* mDefaultColorMaterial = nullptr;
+
     std::vector<utils::Entity> mRenderables;
 
     std::vector<siho::Texture*> mTextures;

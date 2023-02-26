@@ -14,8 +14,10 @@ void Renderer::prepare()
 	
 }
 
-void siho::Renderer::render(View const* view)
+void Renderer::render(View const* view)
 {
-	const Scene& scene = *view->mScene;
-	Camera& camera = *view->mCullingCamera;
+	const Scene& scene = *view->getScene();
+	Camera& camera = *view->getCullingCamera();
+
+	
 }

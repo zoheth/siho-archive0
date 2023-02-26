@@ -1,6 +1,8 @@
 ﻿#pragma once
 
 #include "Engine.h"
+#include "MaterialInstance.h"
+#include "Shader.h"
 
 // 枚举类型，表示材质的反射模式
 enum class ReflectionMode {
@@ -21,7 +23,7 @@ namespace siho {
 
     class Material {
     public:
-        Material(Engine& engine, MaterialInstance const* mi);
+	    explicit Material(Engine& engine);
         ~Material();
 
         MaterialInstance* createInstance(const char* name) const noexcept;
@@ -56,16 +58,10 @@ namespace siho {
     private:
 
 
-        unsigned int program_id;
+        Shader* mShader;
 
         Engine& mEngine;
 
         MaterialInstance mDefaultInstance;
-        MaterialInstance* mMaterialInstance;
-        uint8_t mVariant;
-        uint64_t mMaterialProperties;
-        ReflectionMode mReflectionMode;
-        bool mDoubleSided;
-        bool mIsDefaultMaterial;
     };
 }

@@ -11,9 +11,19 @@ namespace siho
 	public:
 		explicit Scene(Engine& engine);
 		~Scene() noexcept;
+
+		void prepare();
+
 		void addEntity(utils::Entity entity);
+
+		struct RenderableData
+		{
+			
+		};
 	private:
 		Engine& mEngine;
 		std::vector<utils::Entity> mEntities;
+
+
 	};
 }

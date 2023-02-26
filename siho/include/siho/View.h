@@ -3,8 +3,9 @@
 #include <string>
 
 #include "Camera.h"
-#include "../src/PerViewUniforms.h"
 #include "Scene.h"
+
+#include "../src/PerViewUniforms.h"
 
 namespace siho
 {
@@ -13,12 +14,15 @@ namespace siho
 	public:
         explicit View(Engine& engine);
 
-        void setScene(Scene* scene);
+        void setScene(Scene* scene) { mScene = scene; };
 
         void setName(const std::string& name) noexcept {
             mName = name;
         }
         void setCullingCamera(Camera* camera) noexcept { mCullingCamera = camera; }
+
+        Camera* getCullingCamera() const noexcept { return mCullingCamera; }
+        Scene* getScene() const noexcept { return mScene; }
 
 
     private:

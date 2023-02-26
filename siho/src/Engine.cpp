@@ -16,8 +16,7 @@ void Engine::destroy(Engine* engine)
 {
 }
 
-MaterialInstance* Engine::createMaterialInstance(const Material* material, const MaterialInstance* other,
-                                                 const char* name) noexcept
+MaterialInstance* Engine::createMaterialInstance(const Material* material, const MaterialInstance* other, const char* name) noexcept
 {
     
 }
@@ -42,6 +41,11 @@ View* Engine::createView()
 Camera* Engine::createCamera(const Entity entity)
 {
 	return mCameraManager.create(entity);
+}
+
+void Engine::createRenderable(const RenderableManager::Builder& builder, utils::Entity entity)
+{
+	mRenderableManager.
 }
 
 bool Engine::execute()

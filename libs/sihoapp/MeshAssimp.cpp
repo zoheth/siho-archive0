@@ -38,8 +38,14 @@ struct MaterialConfig {
     }
 };
 
+MeshAssimp::MeshAssimp(siho::Engine& engine)
+	:mEngine(engine)
+{
+    mDefaultColorMaterial = new Material(mEngine);
+}
+
 void MeshAssimp::addFromFile(const std::string& path, std::map<std::string, siho::MaterialInstance*>& materials,
-	bool override_material)
+                             bool override_material)
 {
 	Asset asset;
 	asset.file = path;
