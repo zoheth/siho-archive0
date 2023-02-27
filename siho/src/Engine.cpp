@@ -1,6 +1,7 @@
 #include <siho/Engine.h>
 #include <siho/Renderer.h>
 #include <utils/Entity.h>
+#include <siho/MaterialInstance.h>
 
 
 using namespace siho;
@@ -18,7 +19,8 @@ void Engine::destroy(Engine* engine)
 
 MaterialInstance* Engine::createMaterialInstance(const Material* material, const MaterialInstance* other, const char* name) noexcept
 {
-    
+    mMaterialInstances.emplace_back(*this, other, name);
+	return &mMaterialInstances.back();
 }
 
 Renderer* Engine::createRenderer()

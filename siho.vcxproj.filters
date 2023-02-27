@@ -178,8 +178,8 @@
     <None Include="third_party\imgui\.editorconfig" />
     <None Include="third_party\imgui\.gitattributes" />
     <None Include="third_party\imgui\.gitignore" />
-    <None Include="shaders\main.vs" />
-    <None Include="shaders\main.fs" />
+    <None Include="shaders\common.vs" />
+    <None Include="shaders\common.fs" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="third_party\imgui\LICENSE.txt" />

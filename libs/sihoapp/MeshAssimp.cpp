@@ -367,6 +367,7 @@ void MeshAssimp::processNode(Asset& asset, std::map<std::string, siho::MaterialI
                     std::string dir_name = asset.file.getParent();
                     processGltfMaterial(scene, material, material_name, dir_name, out_materials);
                 }*/
+                out_materials[material_name] = mDefaultColorMaterial->createInstance(material_name.c_str());
 
                 aiString diffuse_path;
                 if (material->GetTexture(aiTextureType_DIFFUSE, 0, &diffuse_path))
@@ -413,7 +414,10 @@ void MeshAssimp::processNode(Asset& asset, std::map<std::string, siho::MaterialI
                         }
                     }
                 }
-
+                out_materials[material_name]->setParameter("baseColor", base_color);
+                out_materials[material_name]->setParameter("metallic", metallic);
+                out_materials[material_name]->setParameter("roughness", roughness);
+                out_materials[material_name]->setParameter("reflectance", reflectance);
 
                 asset.meshes.back().parts.push_back({
                         index_buffer_offset, indices_count, material_name,

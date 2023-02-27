@@ -33,7 +33,7 @@ namespace siho
 		BufferObject* createBufferObject();
 		VertexBuffer* createVertexBuffer();
 		MaterialInstance* createMaterialInstance(const Material* material,
-			const MaterialInstance* other, const char* name) noexcept;
+		                                         const MaterialInstance* other, const char* name) noexcept;
 		Material* createMaterial();
 		Texture* createTexture();
 
@@ -45,6 +45,12 @@ namespace siho
 		Camera* createCamera(utils::Entity entity);
 
 		void createRenderable(const RenderableManager::Builder& builder, utils::Entity entity);
+
+
+		RenderableManager& getRenderableManager() { return mRenderableManager; }
+		LightManager& getLightManager() { return mLightManager; }
+		CameraManager& getCameraManager() { return mCameraManager; }
+		utils::EntityManager& getEntityManager() { return mEntityManager; }
 
 		void flush();
 		bool execute();
@@ -63,9 +69,7 @@ namespace siho
 		vector<View> mViews;
 		vector<Scene> mScenes;
 		vector<VertexBuffer> mVertexBuffers;
-		vector<Material> mMaterials;
+		vector<MaterialInstance> mMaterialInstances;
 		vector<Texture> mTextures;
-
 	};
 }
-

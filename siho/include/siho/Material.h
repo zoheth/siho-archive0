@@ -28,38 +28,11 @@ namespace siho {
 
         MaterialInstance* createInstance(const char* name) const noexcept;
 
-        MaterialInstance const* getInstance() const;
-
-        MaterialInstance* getInstance();
-
-        uint64_t getInstanceId() const;
-
-        uint8_t getVariant() const;
-
-        void prepareProgram() const noexcept;
-
-        uint64_t getMaterialProperties() const;
-
-        ReflectionMode getReflectionMode() const;
-
         Engine& getEngine() const noexcept { return mEngine; }
 
-        bool isDefaultMaterial() const;
-
-        void setVariant(uint8_t variant) noexcept;
-
-        void setMaterialProperties(uint64_t properties) noexcept;
-
-        void setReflectionMode(ReflectionMode mode) noexcept;
-
-        void setDoubleSided(bool doubleSided) noexcept;
-
-        void setIsDefaultMaterial(bool isDefaultMaterial) noexcept;
     private:
-
-
+        friend class MaterialInstance;
         Shader* mShader;
-
         Engine& mEngine;
 
         MaterialInstance mDefaultInstance;

@@ -6,7 +6,8 @@ using namespace siho;
 Material::Material(Engine& engine)
 	:mEngine(engine)
 {
-	mShader = new Shader("shaders\\main.vs", "shaders\\main.fs");
+	mShader = new Shader("shaders\\common.vs", "shaders\\common.fs");
+	mDefaultInstance = MaterialInstance(engine, this, "default");
 }
 
 MaterialInstance* Material::createInstance(const char* name) const noexcept
