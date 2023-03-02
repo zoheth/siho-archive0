@@ -1,17 +1,15 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #include <siho/RenderableManager.h>
 #include <siho/Engine.h>
 #include <utils/Entity.h>
 
+#include <glad/glad.h>
+
 using namespace siho;
 using namespace utils;
 
-RenderableManager& RenderableManager::get()
+void RenderableManager::create(const Builder& builder, utils::Entity entity)
 {
-	static RenderableManager instance;
-	return instance;
+	mRenderables[entity.getId()] = { builder.mVao, builder.mIndicesCount, builder.mMaterialInstance };
 }
 
 Renderable* RenderableManager::getRenderable(utils::Entity entity)
@@ -27,16 +25,18 @@ Renderable* RenderableManager::getRenderable(utils::Entity entity)
 RenderableManager::Builder& RenderableManager::Builder::geometry(const std::vector<Vertex>& vertices,
                                                                  const std::vector<uint32_t>& indices, size_t offset, size_t count)
 {
+	uint32_t vbo, ebo;
+	mIndicesCount= count;
 	glGenVertexArrays(1, &mVao);
-	glGenBuffers(1, &mVbo);
-	glGenBuffers(1, &mEbo);
+	glGenBuffers(1, &vbo);
+	glGenBuffers(1, &ebo);
 
 	glBindVertexArray(mVao);
 
-	glBindBuffer(GL_ARRAY_BUFFER, mVbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, count * sizeof(Vertex), &vertices[offset], GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEbo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), &indices[offset], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
@@ -65,4 +65,5 @@ RenderableManager::Builder& RenderableManager::Builder::material(MaterialInstanc
 RenderableManager::Builder::Result RenderableManager::Builder::build(Engine& engine, Entity entity)
 {
 	engine.createRenderable(*this, entity);
+	return SUCCESS;
 }

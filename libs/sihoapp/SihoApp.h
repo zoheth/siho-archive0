@@ -1,4 +1,12 @@
 ﻿#pragma once
+#include <siho/Camera.h>
+#include <siho/Config.h>
+#include <siho/Engine.h>
+#include <siho/View.h>
+#include <siho/Scene.h>
+#include <siho/Renderer.h>
+
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <functional>
@@ -6,13 +14,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-
-#include <siho/Camera.h>
-#include <siho/Config.h>
-#include <siho/Engine.h>
-#include <siho/View.h>
-#include <siho/Scene.h>
-#include <siho/Renderer.h>
 
 class SihoApp
 {

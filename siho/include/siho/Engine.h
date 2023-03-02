@@ -1,8 +1,4 @@
 #pragma once
-
-#include <vector>
-#include <unordered_map>
-
 #include "BufferObject.h"
 #include "Camera.h"
 #include "RenderableManager.h"
@@ -12,6 +8,10 @@
 #include "Texture.h"
 #include "VertexBuffer.h"
 #include "View.h"
+#include "utils/EntityManager.h"
+
+#include <vector>
+#include <unordered_map>
 
 using std::vector;
 using std::unordered_map;
@@ -64,12 +64,12 @@ namespace siho
 		CameraManager mCameraManager;
 
 		VertexBuffer* mTriangleVb = nullptr;
-		vector<BufferObject> mBufferObjects;
-		vector<Renderer> mRenderers;
-		vector<View> mViews;
-		vector<Scene> mScenes;
-		vector<VertexBuffer> mVertexBuffers;
-		vector<MaterialInstance> mMaterialInstances;
-		vector<Texture> mTextures;
+		vector<BufferObject> mBufferObjects{};
+		vector<Renderer> mRenderers{};
+		vector<View> mViews{};
+		vector<Scene> mScenes{};
+		vector<VertexBuffer> mVertexBuffers{};
+		vector<MaterialInstance> mMaterialInstances{};
+		vector<Texture> mTextures{};
 	};
 }

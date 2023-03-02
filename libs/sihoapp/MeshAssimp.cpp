@@ -1,9 +1,9 @@
 ﻿#include "MeshAssimp.h"
 
-#include <glad/glad.h>
 #include <functional>
 #include <iostream>
 #include <ostream>
+#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
@@ -11,6 +11,7 @@
 #include <assimp/scene.h>
 #include <assimp/pbrmaterial.h>
 
+#include <siho/Material.h>
 #include "utils/EntityManager.h"
 
 using namespace siho;

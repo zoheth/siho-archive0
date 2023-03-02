@@ -1,5 +1,3 @@
-#include <glad/glad.h>
-#include <siho/Camera.h>
 #include <sihoapp/SihoApp.h>
 
 #include "sihoapp/MeshAssimp.h"
@@ -34,18 +32,18 @@ static void setup(Engine* engine, View*, Scene* scene)
 		g_mesh_set->addFromFile(filename, g_meshMaterialInstances);
 	}
 
-	for(auto renderable: g_mesh_set->getRenderables())
+	for(const auto renderable: g_mesh_set->getRenderables())
 	{
 		scene->addEntity(renderable);
 	}
 	scene->addEntity(g_params.light);
 }
 
-static void gui(Engine* engine, View*);
-static void preRender(Engine* engine, View*, Scene*, Renderer*);
+
 
 int main(int argc, char *argv[])
 {
+	g_filenames.push_back("C:\\3D Models\\lamp.gltf");
 	SihoApp siho_app;
-	siho_app.run(g_config, setup, cleanup, gui, preRender);
+	siho_app.run(g_config, setup, cleanup);
 }

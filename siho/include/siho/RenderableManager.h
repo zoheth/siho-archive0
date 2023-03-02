@@ -1,6 +1,7 @@
 #pragma once
-#include <unordered_map>
 #include <glm/glm.hpp>
+
+#include <unordered_map>
 
 namespace utils
 {
@@ -25,22 +26,18 @@ namespace siho
 	struct Renderable
 	{
 		uint32_t vao{};
-		uint32_t vbo{};
-		uint32_t ebo{};
-		MaterialInstance const* materialInstance = nullptr;
+		size_t indicesCount{};
+		MaterialInstance* materialInstance = nullptr;
 	};
 
 	class RenderableManager
 	{
 	public:
-		static RenderableManager& get();
-		void create();
-		Renderable* getRenderable(utils::Entity entity);
+		explicit RenderableManager(Engine& engine) :mEngine(engine) {}
 
 		class Builder
 		{
 		public:
-			explicit Builder() noexcept;
 			Builder& geometry(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, size_t offset, size_t count);
 			Builder& material(MaterialInstance* materialInstance) noexcept;
 			Builder& transform(glm::mat4 const& transform) noexcept;
@@ -49,12 +46,15 @@ namespace siho
 			Result build(Engine& engine, utils::Entity entity);
 
 		private:
+			friend class RenderableManager;
 			uint32_t mVao{};
-			uint32_t mVbo{};
-			uint32_t mEbo{};
+			size_t mIndicesCount{};
 			MaterialInstance* mMaterialInstance = nullptr;
 		};
+		void create(const Builder& builder, utils::Entity entity);
+		Renderable* getRenderable(utils::Entity entity);
 	private:
+		Engine& mEngine;
 		std::unordered_map<uint32_t, Renderable> mRenderables;
 
 	};

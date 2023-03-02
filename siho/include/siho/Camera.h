@@ -1,7 +1,8 @@
 ﻿#pragma once
 
-#include <glm/glm.hpp>
 #include <utils/Entity.h>
+
+#include <glm/glm.hpp>
 
 namespace siho {
 
@@ -14,9 +15,12 @@ namespace siho {
         void terminate(Engine& engine) noexcept { }
 
         void setProjection(double fovInDegrees, double aspect, double near, double far);
-        void lookAt(glm::vec3 const& eye, double yaw, double pitch) noexcept;
+    	void lookAt(glm::vec3 const& eye, double yaw, double pitch) noexcept;
+
+        void update();
 
         glm::mat4 getViewMatrix() const noexcept;
+        glm::mat4 getProjectionMatrix() const noexcept;
 
     private:
         Engine& mEngine;
@@ -25,7 +29,13 @@ namespace siho {
         glm::mat4 mProjection;
         glm::mat4 mProjectionForCulling;
         glm::vec3 mPosition;
-        double mZoom{};
+
+        glm::vec3 mFront{0.0f,0.0f,-1.0f};
+        glm::vec3 mUp{ 0.0f,0.0f,1.0f };
+        glm::vec3 mRight{};
+        glm::vec3 mWorldUp{ 0.0f,0.0f,1.0f };
+
+    	double mZoom{};
         double mNear{};
         double mFar{};
         double mYaw{};

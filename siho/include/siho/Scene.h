@@ -1,29 +1,27 @@
 ﻿#pragma once
+
 #include <vector>
 
-#include "Engine.h"
-#include "utils/Entity.h"
+namespace utils
+{
+	class Entity;
+}
 
 namespace siho
 {
+	class Engine;
 	class Scene
 	{
 	public:
 		explicit Scene(Engine& engine);
-		~Scene() noexcept;
 
 		void prepare();
 
 		void addEntity(utils::Entity entity);
 
-		struct RenderableData
-		{
-			
-		};
 	private:
+		friend class Renderer;
 		Engine& mEngine;
-		std::vector<utils::Entity> mEntities;
-
-
+		std::vector<utils::Entity> mEntities{};
 	};
 }

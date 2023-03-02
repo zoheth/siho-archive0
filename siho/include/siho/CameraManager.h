@@ -1,8 +1,15 @@
 #pragma once
-#include "Camera.h"
+
+
+namespace utils
+{
+	class Entity;
+}
 
 namespace siho
 {
+	class Camera;
+	class Engine;
 	class CameraManager
 	{
 	public:

@@ -1,15 +1,15 @@
 ﻿#pragma once
 
-#include <map>
-#include <vector>
-#include <glm/glm.hpp>
 #include <assimp/scene.h>
 
 #include <siho/MaterialInstance.h>
 #include <siho/RenderableManager.h>
 #include <siho/Texture.h>
 #include <utils/Entity.h>
-#include "siho/Engine.h"
+
+#include <map>
+#include <vector>
+#include <glm/glm.hpp>
 
 
 namespace siho
@@ -21,7 +21,6 @@ class MeshAssimp
 {
 public:
     explicit MeshAssimp(siho::Engine& engine);
-    ~MeshAssimp();
 
     void addFromFile(const std::string& path,
         std::map<std::string, siho::MaterialInstance*>& materials,

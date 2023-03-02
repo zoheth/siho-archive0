@@ -19,7 +19,7 @@ void Engine::destroy(Engine* engine)
 
 MaterialInstance* Engine::createMaterialInstance(const Material* material, const MaterialInstance* other, const char* name) noexcept
 {
-    mMaterialInstances.emplace_back(*this, other, name);
+    mMaterialInstances.emplace_back(*this, material, name);
 	return &mMaterialInstances.back();
 }
 
@@ -38,6 +38,7 @@ Scene* Engine::createScene()
 View* Engine::createView()
 {
 	mViews.push_back(*new View(*this));
+	return &mViews.back();
 }
 
 Camera* Engine::createCamera(const Entity entity)
@@ -47,10 +48,16 @@ Camera* Engine::createCamera(const Entity entity)
 
 void Engine::createRenderable(const RenderableManager::Builder& builder, utils::Entity entity)
 {
-	mRenderableManager.
+	mRenderableManager.create(builder, entity);
 }
 
 bool Engine::execute()
 {
-
+	return true;
 }
+
+Engine::Engine()
+	: mEntityManager(EntityManager::get()), mRenderableManager(*this),mLightManager(*this), mCameraManager(*this)
+{
+}
+

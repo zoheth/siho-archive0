@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Engine.h"
 #include "View.h"
+#include "RenderableManager.h"
 
 namespace siho
 {
@@ -10,7 +11,9 @@ namespace siho
 		explicit Renderer(Engine& engine);
 		void prepare();
 		void render(View const* view);
-		Engine* getEngine() noexcept;
+
+		void draw(Renderable const* renderable);
+		Engine* getEngine() const noexcept;
 
 	private:
 		Engine& mEngine;

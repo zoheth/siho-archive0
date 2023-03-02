@@ -1,15 +1,11 @@
 ﻿#include "SihoApp.h"
 
-#include <glad/glad.h>
-#include <iostream>
 #include <siho/Renderer.h>
 #include <siho/Engine.h>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include "utils/EntityManager.h"
+#include <iostream>
 
 using namespace siho;
 
@@ -67,6 +63,7 @@ SihoApp::CView::CView(siho::Renderer& renderer, const std::string& name)
 }
 
 SihoApp::Window::Window(SihoApp* app, const Config& config, const std::string& title, int w, int h)
+	:mApp(app), mWidth(w), mHeight(h)
 {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);

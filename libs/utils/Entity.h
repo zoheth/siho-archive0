@@ -1,11 +1,12 @@
 #pragma once
+#include <cstdint>
 
 namespace utils
 {
 	class Entity
 	{
 	public:
-		Entity() noexcept {}
+		Entity() noexcept = default;
 
 		// Entities can be copied
 		Entity(const Entity& e) noexcept = default;

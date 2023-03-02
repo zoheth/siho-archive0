@@ -1,20 +1,21 @@
 ﻿#pragma once
+#include "../src/PerViewUniforms.h"
+
 #include <cstdint>
 #include <string>
 
-#include "Camera.h"
-#include "Scene.h"
-
-#include "../src/PerViewUniforms.h"
 
 namespace siho
 {
+    class Camera;
+    class Scene;
+
 	class View
 	{
 	public:
         explicit View(Engine& engine);
 
-        void setScene(Scene* scene) { mScene = scene; };
+        void setScene(siho::Scene* scene) { mScene = scene; }
 
         void setName(const std::string& name) noexcept {
             mName = name;
@@ -26,10 +27,10 @@ namespace siho
 
 
     private:
-        std::string mName;
-        mutable PerViewUniforms mPerViewUniforms;
+        std::string mName{};
+        //mutable PerViewUniforms mPerViewUniforms;
 
-        Scene* mScene = nullptr;
+        Scene *mScene = nullptr;
         Camera* mCullingCamera = nullptr;
 
 	};

@@ -1,13 +1,11 @@
 ﻿#include <siho/Material.h>
-#include <siho/MaterialInstance.h>
 
 using namespace siho;
 
 Material::Material(Engine& engine)
-	:mEngine(engine)
+	:mEngine(engine), mDefaultInstance(engine, this, "default")
 {
 	mShader = new Shader("shaders\\common.vs", "shaders\\common.fs");
-	mDefaultInstance = MaterialInstance(engine, this, "default");
 }
 
 MaterialInstance* Material::createInstance(const char* name) const noexcept

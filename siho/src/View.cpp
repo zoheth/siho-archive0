@@ -5,7 +5,6 @@ using namespace siho;
 
 
 View::View(Engine& engine)
-	: mPerViewUniforms(engine)
 {
 
 }

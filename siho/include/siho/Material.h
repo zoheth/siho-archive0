@@ -2,7 +2,7 @@
 
 #include "Engine.h"
 #include "MaterialInstance.h"
-#include "Shader.h"
+#include "../src/Shader.h"
 
 // 枚举类型，表示材质的反射模式
 enum class ReflectionMode {
@@ -32,7 +32,7 @@ namespace siho {
 
     private:
         friend class MaterialInstance;
-        Shader* mShader;
+        Shader* mShader{};
         Engine& mEngine;
 
         MaterialInstance mDefaultInstance;

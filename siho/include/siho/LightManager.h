@@ -1,9 +1,15 @@
 #pragma once
+
+
+
+#include <glm/glm.hpp>
 #include <cstdint>
 #include <unordered_map>
-#include <glm/glm.hpp>
 
-#include "utils/Entity.h"
+namespace utils
+{
+	class Entity;
+}
 
 namespace siho
 {
@@ -16,7 +22,7 @@ namespace siho
 	{
 		struct BuilderDetails;
 	public:
-
+		explicit LightManager(Engine& engine) :mEngine(engine) {}
 		bool hasComponent(utils::Entity e) const noexcept;
 
 		//! Denotes the type of the light being created.
@@ -45,6 +51,7 @@ namespace siho
 		void create(const LightManager::Builder& builder);
 
 	private:
+		Engine& mEngine;
 		uint32_t mLightCount = 0;
 		std::vector<LightData> mLightArray;
 		
