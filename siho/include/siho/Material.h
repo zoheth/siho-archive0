@@ -1,22 +1,6 @@
 ﻿#pragma once
-
-#include "Engine.h"
 #include "MaterialInstance.h"
 #include "../src/Shader.h"
-
-// 枚举类型，表示材质的反射模式
-enum class ReflectionMode {
-    NONE, // 无反射
-    CUBE_MAP, // 立方体贴图反射
-    PLANAR // 平面反射
-};
-
-enum class CullingMode : uint8_t {
-    NONE,               //!< No culling, front and back faces are visible
-    FRONT,              //!< Front face culling, only back faces are visible
-    BACK,               //!< Back face culling, only front faces are visible
-    FRONT_AND_BACK      //!< Front and Back, geometry is not visible
-};
 
 namespace siho {
     class MaterialInstance;

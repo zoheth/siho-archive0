@@ -1,59 +1,52 @@
 #pragma once
-
-
-
 #include <glm/glm.hpp>
-#include <cstdint>
-#include <unordered_map>
+#include <vector>
 
-namespace utils
-{
-	class Entity;
-}
+#include "UniformObject.h"
 
-namespace siho
-{
-	class Engine;
-	struct LightData
-	{
-		
-	};
-	class LightManager
-	{
-		struct BuilderDetails;
-	public:
-		explicit LightManager(Engine& engine) :mEngine(engine) {}
-		bool hasComponent(utils::Entity e) const noexcept;
+class PointLight {
+public:
+    glm::vec3 position_;
+    glm::vec3 ambient_;
+    glm::vec3 diffuse_;
+    glm::vec3 specular_;
+    float constant_;
+    float linear_;
+    float quadratic_;
+};
 
-		//! Denotes the type of the light being created.
-		enum class type : uint8_t {
-			SUN,            //!< Directional light that also draws a sun's disk in the sky.
-			DIRECTIONAL,    //!< Directional light, emits light in a given direction.
-			POINT,          //!< Point light, emits light from a position, in all directions.
-			FOCUSED_SPOT,   //!< Physically correct spot light.
-			SPOT,           //!< Spot light with coupling of outer cone and illumination disabled.
-		};
+class DirectionalLight {
+public:
+    glm::vec3 direction_;
+    glm::vec3 ambient_;
+    glm::vec3 diffuse_;
+    glm::vec3 specular_;
+};
 
-		//! Use Builder to construct a Light object instance
-		class Builder
-		{
-		public:
-			Builder& position(const glm::vec3& position) noexcept;
-			Builder& direction(const glm::vec3& direction) noexcept;
-			Builder& color(const glm::vec3& color) noexcept;
-			Builder& intensity(float intensity) noexcept;
-			Builder& intensity(float watts, float efficiency) noexcept;
-			Builder& falloff(float radius) noexcept;
-			enum Result { ERROR = -1, SUCCESS = 0 };
-			Result build(Engine& engine);
-		};
+class SpotLight {
+public:
+    glm::vec3 position_;
+    glm::vec3 direction_;
+    glm::vec3 ambient_;
+    glm::vec3 diffuse_;
+    glm::vec3 specular_;
+    float constant_;
+    float linear_;
+    float quadratic_;
+    float cutoff_;
+    float outer_cutoff_;
+};
 
-		void create(const LightManager::Builder& builder);
+class LightManager {
+public:
+    void addPointLight(PointLight light);
+    UniformObject GetLightData() const;
 
-	private:
-		Engine& mEngine;
-		uint32_t mLightCount = 0;
-		std::vector<LightData> mLightArray;
-		
-	};
-}
+
+
+private:
+    DirectionalLight m_directionalLight;
+    std::vector<PointLight> m_pointLights;
+    SpotLight m_spotLight;
+
+};

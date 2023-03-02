@@ -1,2 +1,0 @@
-#include <siho/LightManager.h>
-
