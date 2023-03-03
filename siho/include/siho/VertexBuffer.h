@@ -1,17 +1,14 @@
 ﻿#pragma once
 
-namespace siho
+class VertexBuffer
 {
-	class VertexBuffer
-	{
-	public:
-		VertexBuffer(const void* data, unsigned int size);
-		~VertexBuffer();
+public:
+	VertexBuffer(const void* data, unsigned int size);
+	~VertexBuffer();
 
-		void Bind() const;
-		void Unbind() const;
-	private:
-		unsigned renderer_id_;
-	};
+	void Bind() const;
+	static void Unbind();
+private:
+	unsigned renderer_id_;
+};
 
-}

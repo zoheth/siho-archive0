@@ -123,23 +123,19 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="libs\sihoapp\MeshAssimp.h" />
-    <ClInclude Include="libs\utils\Entity.h" />
-    <ClInclude Include="libs\utils\EntityManager.h" />
-    <ClInclude Include="siho\include\siho\BufferObject.h" />
+    <ClInclude Include="siho\include\siho\MeshAssimp.h" />
     <ClInclude Include="siho\include\siho\Camera.h" />
     <ClInclude Include="siho\include\siho\IndexBuffer.h" />
     <ClInclude Include="siho\include\siho\LightManager.h" />
-    <ClInclude Include="siho\include\siho\Material.h" />
-    <ClInclude Include="siho\include\siho\MaterialInstance.h" />
-    <ClInclude Include="siho\include\siho\RenderableManager.h" />
+    <ClInclude Include="siho\include\siho\Renderable.h" />
     <ClInclude Include="siho\include\siho\Renderer.h" />
+    <ClInclude Include="siho\include\siho\RenderPass.h" />
+    <ClInclude Include="siho\include\siho\RenderTarget.h" />
     <ClInclude Include="siho\include\siho\Scene.h" />
     <ClInclude Include="siho\include\siho\Texture.h" />
     <ClInclude Include="siho\include\siho\UniformObject.h" />
     <ClInclude Include="siho\include\siho\VertexBuffer.h" />
-    <ClInclude Include="siho\src\Shader.h" />
-    <ClInclude Include="siho\src\PerViewUniforms.h" />
+    <ClInclude Include="siho\include\siho\Shader.h" />
     <ClInclude Include="third_party\imgui\imconfig.h" />
     <ClInclude Include="third_party\imgui\imgui.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -164,28 +160,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libs\glad.c" />
-    <ClCompile Include="libs\sihoapp\MeshAssimp.cpp" />
-    <ClCompile Include="libs\utils\EntityManager.cpp" />
-    <ClCompile Include="samples\main.cpp" />
-    <ClCompile Include="siho\src\BufferObject.cpp" />
-    <ClCompile Include="siho\src\Camera.cpp" />
-    <ClCompile Include="siho\src\Config.cpp" />
-    <ClCompile Include="siho\src\LightManager.cpp" />
-    <ClCompile Include="siho\src\Material.cpp" />
-    <ClCompile Include="siho\src\MaterialInstance.cpp" />
-    <ClCompile Include="siho\src\PerViewUniforms.cpp" />
-    <ClCompile Include="siho\src\Renderer.cpp" />
-    <ClCompile Include="siho\src\Scene.cpp" />
     <ClCompile Include="libs\sihoapp\SihoApp.cpp" />
+    <ClCompile Include="siho\src\Camera.cpp" />
+    <ClCompile Include="siho\src\LightManager.cpp" />
+    <ClCompile Include="siho\src\MessAssimp.cpp" />
+    <ClCompile Include="siho\src\Renderable.cpp" />
+    <ClCompile Include="siho\src\RenderPass.cpp" />
+    <ClCompile Include="siho\src\RenderTarget.cpp" />
+    <ClCompile Include="siho\src\Scene.cpp" />
     <ClCompile Include="siho\src\Shader.cpp" />
     <ClCompile Include="siho\src\Texture.cpp" />
+    <ClCompile Include="siho\src\UniformObject.cpp" />
     <ClCompile Include="siho\src\VertexBuffer.cpp" />
-    <ClCompile Include="siho\src\View.cpp" />
     <ClCompile Include="third_party\imgui\imgui.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="third_party\imgui\imgui_demo.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -197,10 +184,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="third_party\imgui\imgui_widgets.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="third_party\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\common.fs" />

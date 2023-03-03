@@ -1,17 +1,33 @@
 ﻿#pragma once
-
 #include <vector>
 
-namespace siho
+#include "LightManager.h"
+#include "Renderable.h"
+#include "Shader.h"
+#include "UniformObject.h"
+
+class Scene
 {
-	class Scene
-	{
-	public:
+public:
 
-		void prepare();
+	void AddRenderable(const Renderable& renderable) { renderables_.push_back(renderable); }
+    void AddLight(const PointLight& light) { light_manager_.AddPointLight(light); }
 
+    void render(Shader& shader) {
+        // 设置光源uniform
+        light_manager_.SetUniforms(uniform_obj_);
+        uniform_obj_.apply(shader);
+        for (auto& renderable : renderables_) {
 
-	private:
-		
-	};
-}
+            renderable.render(shader);
+        }
+    }
+    void set_renderables(std::vector<Renderable>&& renderables) { renderables_ = std::move(renderables); }
+
+    std::vector<Renderable>& renderables() { return renderables_; }
+private:
+    UniformObject uniform_obj_;
+	LightManager light_manager_{};
+	std::vector<Renderable> renderables_{};
+};
+

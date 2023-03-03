@@ -1,44 +1,61 @@
 ﻿#pragma once
-
-#include <utils/Entity.h>
-
+#include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
-namespace siho {
+#include "UniformObject.h"
 
-    class Engine;
+#include <vector>
 
-    class Camera {
-    public:
-        Camera(Engine& engine, utils::Entity e);
+// Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
+enum CameraMovement {
+    FORWARD,
+    BACKWARD,
+    LEFT,
+    RIGHT
+};
 
-        void terminate(Engine& engine) noexcept { }
+// Default camera values
+constexpr float kYaw = -90.0f;
+constexpr float kPitch = 0.0f;
+constexpr float kSpeed = 2.5f;
+constexpr float kSensitivity = 0.05f;
+constexpr float kZoom = 45.0f;
 
-        void setProjection(double fovInDegrees, double aspect, double near, double far);
-    	void lookAt(glm::vec3 const& eye, double yaw, double pitch) noexcept;
 
-        void update();
+// An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
+class Camera
+{
+public:
+    explicit Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = kYaw, float pitch = kPitch);
+    Camera(float pos_x, float pos_y, float pos_z, float up_x, float up_y, float up_z, float yaw, float pitch);
 
-        glm::mat4 getViewMatrix() const noexcept;
-        glm::mat4 getProjectionMatrix() const noexcept;
+    void SetUniforms(UniformObject& uniform_object) const;
 
-    private:
-        Engine& mEngine;
-        utils::Entity mEntity;
+    void SetProjection(float aspect, float near, float far);
 
-        glm::mat4 mProjection;
-        glm::mat4 mProjectionForCulling;
-        glm::vec3 mPosition;
+    glm::mat4 GetViewMatrix() const;
 
-        glm::vec3 mFront{0.0f,0.0f,-1.0f};
-        glm::vec3 mUp{ 0.0f,0.0f,1.0f };
-        glm::vec3 mRight{};
-        glm::vec3 mWorldUp{ 0.0f,0.0f,1.0f };
+    void ProcessKeyboard(CameraMovement direction, float delta_time);
 
-    	double mZoom{};
-        double mNear{};
-        double mFar{};
-        double mYaw{};
-        double mPitch{};
-    };
-}
+    void ProcessMouseMovement(float x_offset, float y_offset, GLboolean constrain_pitch = true);
+
+    void ProcessMouseScroll(float y_offset);
+
+private:
+    void UpdateCameraVectors();
+    // camera Attributes
+    glm::mat4 projection_;
+    glm::vec3 position_;
+    glm::vec3 front_;
+    glm::vec3 up_;
+    glm::vec3 right_;
+    glm::vec3 world_up_;
+    // euler Angles
+    float yaw_;
+    float pitch_;
+    // camera options
+    float movement_speed_;
+    float mouse_sensitivity_;
+    float zoom_;
+};

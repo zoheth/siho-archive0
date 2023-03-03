@@ -4,49 +4,39 @@
 
 #include "UniformObject.h"
 
-class PointLight {
-public:
-    glm::vec3 position_;
-    glm::vec3 ambient_;
-    glm::vec3 diffuse_;
-    glm::vec3 specular_;
-    float constant_;
-    float linear_;
-    float quadratic_;
+struct PointLight {
+    glm::vec3 position;
+    glm::vec3 color;
+    float intensity;
 };
 
-class DirectionalLight {
-public:
-    glm::vec3 direction_;
-    glm::vec3 ambient_;
-    glm::vec3 diffuse_;
-    glm::vec3 specular_;
+struct  DirectionalLight {
+    glm::vec3 direction;
+    glm::vec3 color;
+    float intensity;
 };
 
-class SpotLight {
-public:
-    glm::vec3 position_;
-    glm::vec3 direction_;
-    glm::vec3 ambient_;
-    glm::vec3 diffuse_;
-    glm::vec3 specular_;
-    float constant_;
-    float linear_;
-    float quadratic_;
-    float cutoff_;
-    float outer_cutoff_;
+struct SpotLight {
+    glm::vec3 position;
+    glm::vec3 direction;
+    glm::vec3 color;
+    float intensity;
+    float cutoff;
+    float outer_cutoff;
 };
 
 class LightManager {
 public:
-    void addPointLight(PointLight light);
-    UniformObject GetLightData() const;
+
+    void AddPointLight(PointLight light);
+    void setDirectionalLight(DirectionalLight light);
+    void AddSpotLight(SpotLight light);
 
 
+    void SetUniforms(UniformObject& uniform_obj) const;
 
 private:
-    DirectionalLight m_directionalLight;
-    std::vector<PointLight> m_pointLights;
-    SpotLight m_spotLight;
-
+    DirectionalLight directional_light_{};
+    std::vector<PointLight> point_lights_{};
+    std::vector<SpotLight> spot_lights_{};
 };
