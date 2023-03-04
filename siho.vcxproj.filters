@@ -63,7 +63,10 @@
     <ClCompile Include="third_party\imgui\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="samples\simple.cpp">
+    <ClCompile Include="libs\sihoapp\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="samples\model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -123,6 +126,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="siho\include\siho\MeshAssimp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\sihoapp\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

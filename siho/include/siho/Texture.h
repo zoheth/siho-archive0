@@ -8,6 +8,8 @@ public:
 	explicit Texture(const std::string& path, const bool gamma=false);
     ~Texture();
 
+	[[nodiscard]] unsigned int id() const { return id_; }
+
     void Bind(unsigned int slot = 0) const;
     static void Unbind();
 
@@ -15,7 +17,7 @@ public:
 	[[nodiscard]] int height() const { return height_; }
 
 private:
-    unsigned int renderer_id_{};
+    unsigned int id_{};
     std::string file_path_;
     int width_{}, height_{}, bpp_{};
 };

@@ -2,7 +2,6 @@
 #include <string>
 #include <unordered_map>
 #include <variant>
-#include <glad/glad.h>
 #include <glm/glm.hpp>
 
 using std::string;
@@ -24,10 +23,10 @@ namespace uniforms
 	static const string kTextureNormal = "material.texture_normal";
 	static const string kTextureHeight = "material.texture_height";
 
-	static const string kPointLightPrefix = "pointLights";
-	static const string kSpotLightPrefix = "spotLights";
-	static const string kPointLightsCount = "pointLightsCount";
-	static const string kSpotLightsCount = "spotLightsCount";
+	static const string kPointLightPrefix = "point_lights";
+	static const string kSpotLightPrefix = "spot_lights";
+	static const string kPointLightsCount = "point_lights_count";
+	static const string kSpotLightsCount = "spot_lights_count";
 
 	enum class Light
 	{
@@ -76,7 +75,7 @@ class UniformObject
 {
 public:
 	using UniformData =
-	std::variant<bool, float, int,
+	std::variant<bool, float, int, unsigned int,
 	             glm::vec2, glm::vec3, glm::vec4,
 	             glm::mat2, glm::mat3, glm::mat4>;
 

@@ -1,5 +1,7 @@
 #include <siho/Renderable.h>
 
+#include <glad/glad.h>
+
 void Renderable::SetMaterialUniforms(UniformObject& uniform_object)
 {
 	uniform_object.set(uniforms::kColorAmbient, material_->ambient);
@@ -7,17 +9,22 @@ void Renderable::SetMaterialUniforms(UniformObject& uniform_object)
 	uniform_object.set(uniforms::kColorSpecular, material_->specular);
 	uniform_object.set(uniforms::kShininess, material_->shininess);
 	uniform_object.set(uniforms::kColorEmission, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+
+	unsigned int slot = texture_slot_;
 	if(!material_->textures_diffuse.empty())
 	{
-		material_->textures_diffuse[0].Bind(texture_slot_++);
+		uniform_object.set(uniforms::kTextureDiffuse, slot);
+		material_->textures_diffuse[0].Bind(slot++);
 	}
 	if(!material_->textures_specular.empty())
 	{
-		material_->textures_specular[0].Bind(texture_slot_++);
+		uniform_object.set(uniforms::kTextureSpecular, slot);
+		material_->textures_specular[0].Bind(slot++);
 	}
 	if(!material_->textures_normal.empty())
 	{
-		material_->textures_normal[0].Bind(texture_slot_++);
+		uniform_object.set(uniforms::kTextureNormal, slot);
+		material_->textures_normal[0].Bind(slot++);
 	}
 }
 
@@ -65,9 +72,8 @@ void Renderable::render(Shader& shader)
 {
 	UniformObject temp;
 	SetMaterialUniforms(temp);
-	temp.apply(shader);
-
 	glBindVertexArray(vao_);
+	temp.apply(shader);
 	if(indices_.empty())
 		glDrawArrays(GL_TRIANGLES, 0, vertices_.size());
 	else

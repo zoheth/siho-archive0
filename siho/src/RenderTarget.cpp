@@ -1,5 +1,8 @@
-#include <stdexcept>
 #include <siho/RenderTarget.h>
+
+#include <stdexcept>
+#include <glad/glad.h>
+
 
 RenderTarget::RenderTarget(const int width, const int height)
     : width_(width), height_(height)

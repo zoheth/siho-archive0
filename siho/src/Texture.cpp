@@ -1,9 +1,11 @@
-﻿#include <siho/Texture.h>
+﻿#include <iostream>
+#include <siho/Texture.h>
 
 #include <stb_image.h>
 #include <glad/glad.h>
 
 Texture::Texture(const std::string& path, const bool gamma)
+	:file_path_(path)
 {
     stbi_set_flip_vertically_on_load(1);
 
@@ -24,8 +26,8 @@ Texture::Texture(const std::string& path, const bool gamma)
             data_format = GL_RGBA;
         }
 
-        glGenTextures(1, &renderer_id_);
-        glBindTexture(GL_TEXTURE_2D, renderer_id_);
+        glGenTextures(1, &id_);
+        glBindTexture(GL_TEXTURE_2D, id_);
         glTexImage2D(GL_TEXTURE_2D, 0, internal_format, width_, height_, 0, data_format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -36,17 +38,22 @@ Texture::Texture(const std::string& path, const bool gamma)
 
         stbi_image_free(data);
 	}
+    else
+    {
+        std::cout << "Texture failed to load at path: " << path << std::endl;
+        stbi_image_free(data);
+    }
 }
 
 Texture::~Texture()
 {
-    glDeleteTextures(1, &renderer_id_);
+    //glDeleteTextures(1, &id_);
 }
 
 void Texture::Bind(unsigned slot) const
 {
     glActiveTexture(GL_TEXTURE0 + slot);
-    glBindTexture(GL_TEXTURE_2D, renderer_id_);
+    glBindTexture(GL_TEXTURE_2D, id_);
 }
 
 void Texture::Unbind()

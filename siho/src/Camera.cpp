@@ -1,7 +1,7 @@
-﻿#include <glm/gtc/matrix_transform.hpp>
-#include <siho/Camera.h>
+﻿#include <siho/Camera.h>
+#include <glm/gtc/matrix_transform.hpp>
 
-Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch): front_(glm::vec3(0.0f, 0.0f, -1.0f)), movement_speed_(kSpeed), mouse_sensitivity_(kSensitivity), zoom_(kZoom)
+Camera::Camera(glm::vec3 position, glm::vec3 up, double yaw, double pitch): front_(glm::vec3(0.0f, 0.0f, -1.0f)), movement_speed_(kSpeed), mouse_sensitivity_(kSensitivity), zoom_(kZoom)
 {
 	position_ = position;
 	world_up_ = up;
@@ -10,7 +10,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch): front_
 	UpdateCameraVectors();
 }
 
-Camera::Camera(float pos_x, float pos_y, float pos_z, float up_x, float up_y, float up_z, float yaw, float pitch): front_(glm::vec3(0.0f, 0.0f, -1.0f)), movement_speed_(kSpeed), mouse_sensitivity_(kSensitivity), zoom_(kZoom)
+Camera::Camera(double pos_x, double pos_y, double pos_z, double up_x, double up_y, double up_z, double yaw, double pitch): front_(glm::vec3(0.0f, 0.0f, -1.0f)), movement_speed_(kSpeed), mouse_sensitivity_(kSensitivity), zoom_(kZoom)
 {
 	position_ = glm::vec3(pos_x, pos_y, pos_z);
 	world_up_ = glm::vec3(up_x, up_y, up_z);
@@ -25,7 +25,7 @@ void Camera::SetUniforms(UniformObject& uniform_object) const
 	uniform_object.set(uniforms::kProjection, projection_);
 }
 
-void Camera::SetProjection(float aspect, float near, float far)
+void Camera::SetProjection(const double aspect, const double near, const double far)
 {
 	projection_ = glm::perspective(glm::radians(zoom_), aspect, near, far);
 }
@@ -35,7 +35,7 @@ glm::mat4 Camera::GetViewMatrix() const
 	return glm::lookAt(position_, position_ + front_, up_);
 }
 
-void Camera::ProcessKeyboard(const CameraMovement direction, const float delta_time)
+void Camera::ProcessKeyboard(const CameraMovement direction, const double delta_time)
 {
 	const float velocity = movement_speed_ * delta_time;
 	if (direction == FORWARD)
@@ -48,7 +48,7 @@ void Camera::ProcessKeyboard(const CameraMovement direction, const float delta_t
 		position_ += right_ * velocity;
 }
 
-void Camera::ProcessMouseMovement(float x_offset, float y_offset, GLboolean constrain_pitch)
+void Camera::ProcessMouseMovement(double x_offset, double y_offset, bool constrain_pitch)
 {
 	x_offset *= mouse_sensitivity_;
 	y_offset *= mouse_sensitivity_;
@@ -59,23 +59,23 @@ void Camera::ProcessMouseMovement(float x_offset, float y_offset, GLboolean cons
 	// make sure that when pitch is out of bounds, screen doesn't get flipped
 	if (constrain_pitch)
 	{
-		if (pitch_ > 89.0f)
-			pitch_ = 89.0f;
-		if (pitch_ < -89.0f)
-			pitch_ = -89.0f;
+		if (pitch_ > 89.0)
+			pitch_ = 89.0;
+		if (pitch_ < -89.0)
+			pitch_ = -89.0;
 	}
 
 	// update Front, Right and Up Vectors using the updated Euler angles
 	UpdateCameraVectors();
 }
 
-void Camera::ProcessMouseScroll(float y_offset)
+void Camera::ProcessMouseScroll(double y_offset)
 {
-	zoom_ -= (float)y_offset;
-	if (zoom_ < 1.0f)
-		zoom_ = 1.0f;
-	if (zoom_ > 45.0f)
-		zoom_ = 45.0f;
+	zoom_ -= y_offset;
+	if (zoom_ < 1.0)
+		zoom_ = 1.0;
+	if (zoom_ > 45.0)
+		zoom_ = 45.0;
 }
 
 void Camera::UpdateCameraVectors()

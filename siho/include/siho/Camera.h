@@ -1,8 +1,4 @@
 ﻿#pragma once
-#include <glad/glad.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 #include "UniformObject.h"
 
 #include <vector>
@@ -16,31 +12,31 @@ enum CameraMovement {
 };
 
 // Default camera values
-constexpr float kYaw = -90.0f;
-constexpr float kPitch = 0.0f;
-constexpr float kSpeed = 2.5f;
-constexpr float kSensitivity = 0.05f;
-constexpr float kZoom = 45.0f;
+constexpr double kYaw = -90.0;
+constexpr double kPitch = 0.0;
+constexpr double kSpeed = 2.5;
+constexpr double kSensitivity = 0.05;
+constexpr double kZoom = 45.0;
 
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
 class Camera
 {
 public:
-    explicit Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = kYaw, float pitch = kPitch);
-    Camera(float pos_x, float pos_y, float pos_z, float up_x, float up_y, float up_z, float yaw, float pitch);
+    explicit Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), double yaw = kYaw, double pitch = kPitch);
+    Camera(double pos_x, double pos_y, double pos_z, double up_x, double up_y, double up_z, double yaw, double pitch);
 
     void SetUniforms(UniformObject& uniform_object) const;
 
-    void SetProjection(float aspect, float near, float far);
+    void SetProjection(double aspect, double near, double far);
 
     glm::mat4 GetViewMatrix() const;
 
-    void ProcessKeyboard(CameraMovement direction, float delta_time);
+    void ProcessKeyboard(CameraMovement direction, double delta_time);
 
-    void ProcessMouseMovement(float x_offset, float y_offset, GLboolean constrain_pitch = true);
+    void ProcessMouseMovement(double x_offset, double y_offset, bool constrain_pitch = true);
 
-    void ProcessMouseScroll(float y_offset);
+    void ProcessMouseScroll(double y_offset);
 
 private:
     void UpdateCameraVectors();
@@ -52,10 +48,10 @@ private:
     glm::vec3 right_;
     glm::vec3 world_up_;
     // euler Angles
-    float yaw_;
-    float pitch_;
+    double yaw_;
+    double pitch_;
     // camera options
-    float movement_speed_;
-    float mouse_sensitivity_;
-    float zoom_;
+    double movement_speed_;
+    double mouse_sensitivity_;
+    double zoom_;
 };

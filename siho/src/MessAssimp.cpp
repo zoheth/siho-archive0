@@ -126,11 +126,11 @@ void MeshAssimp::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 
 void MeshAssimp::LoadMaterialTextures(const aiMaterial* ai_mat, const aiTextureType type, std::vector<Texture>& textures)
 {
-    for (size_t i = 0; i < ai_mat->GetTextureCount(type); i++)
+    for (unsigned int i = 0; i < ai_mat->GetTextureCount(type); i++)
     {
         aiString ai_str;
-        auto str = std::string(ai_str.data);
         ai_mat->GetTexture(type, i, &ai_str);
+        auto str = std::string(ai_str.data);
         if (texture_name_cache_.find(str) == texture_name_cache_.end())
         {
             texture_name_cache_.insert(str);

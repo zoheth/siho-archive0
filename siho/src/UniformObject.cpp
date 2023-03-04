@@ -6,6 +6,7 @@
 template void UniformObject::set<bool>(const std::string& name, const bool& value);
 template void UniformObject::set<float>(const std::string& name, const float& value);
 template void UniformObject::set<int>(const std::string& name, const int& value);
+template void UniformObject::set<unsigned int>(const std::string& name, const unsigned int& value);
 template void UniformObject::set<glm::vec2>(const std::string& name, const glm::vec2& value);
 template void UniformObject::set<glm::vec3>(const std::string& name, const glm::vec3& value);
 template void UniformObject::set<glm::vec4>(const std::string& name, const glm::vec4& value);
@@ -30,6 +31,10 @@ void UniformObject::apply(const Shader& shader) const
 		else if (std::holds_alternative<float>(value))
 		{
 			shader.setFloat(name, std::get<float>(value));
+		}
+		else if (std::holds_alternative<unsigned int>(value))
+		{
+			shader.setUInt(name, std::get<unsigned int>(value));
 		}
 		else if (std::holds_alternative<int>(value))
 		{

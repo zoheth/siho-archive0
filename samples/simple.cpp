@@ -1,60 +1,22 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#include <iostream>
-
 #include <siho/Renderer.h>
 #include <siho/MeshAssimp.h>
 #include <siho/Scene.h>
 #include <siho/Camera.h>
 
-
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
-//#include <imgui.h>
-//#include <backends/imgui_impl_glfw.h>
+#include "sihoapp/Window.h"
+
 
 using namespace siho;
 
-GLFWwindow* InitWindow(int width, int height)
-{
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	GLFWwindow* window = glfwCreateWindow(width, height, "Siho", nullptr, nullptr);
-	if (window == nullptr)
-	{
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return nullptr;
-	}
-	glfwMakeContextCurrent(window);
-
-	if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
-	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return nullptr;
-	}
-	return window;
-}
 
 int main(void)
 {
 	int width = 1920, height = 1080;
-	GLFWwindow* window = InitWindow(width, height);
-	if (!window)
-		return -1;
-
-	/*IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui::StyleColorsDark();*/
-
-
+	Window window(width, height, "Siho");
 
 	Scene scene;
 	std::vector<Vertex> vertices(3);
@@ -80,8 +42,8 @@ int main(void)
 	Camera camera;
 	camera.SetProjection(static_cast<float>(width) / height, 0.1f, 100.0f);
 	UniformObject uniform_camera;
-	camera.SetUniforms(uniform_camera);
-	uniform_camera.apply(shader);
+
+	window.SetCamera(&camera);
 
 	glEnable(GL_DEPTH_TEST);
 	do
@@ -90,13 +52,15 @@ int main(void)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//ImGui_ImplGlfw_NewFrame();
 
+		camera.SetUniforms(uniform_camera);
+		uniform_camera.apply(shader);
+
 		scene.render(shader);
 
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+		window.SwapBuffers();
+		window.PollEvents();
 
-	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
-		glfwWindowShouldClose(window) == 0);
+	} while (window.ShouldClose());
 
 	//ImGui_ImplGlfw_Shutdown();
 	//ImGui::DestroyContext();

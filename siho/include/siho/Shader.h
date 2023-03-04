@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <glad/glad.h>
 #include <glm/glm.hpp>
 
 #include <string>
@@ -13,6 +12,7 @@ public:
     [[nodiscard]] unsigned int program_id() const { return program_id_; }
 
     void setBool(const std::string& name, bool value) const;
+    void setUInt(const std::string& name, unsigned int value) const;
     void setInt(const std::string& name, int value) const;
     void setFloat(const std::string& name, float value) const;
     void setVec2(const std::string& name, const glm::vec2& value) const;
@@ -27,5 +27,5 @@ public:
 
 private:
     unsigned int program_id_;
-    static void checkCompileErrors(GLuint shader, const std::string& type);
+    static void checkCompileErrors(unsigned int shader, const std::string& type);
 };

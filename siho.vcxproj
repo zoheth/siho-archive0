@@ -123,6 +123,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="libs\sihoapp\Window.h" />
     <ClInclude Include="siho\include\siho\MeshAssimp.h" />
     <ClInclude Include="siho\include\siho\Camera.h" />
     <ClInclude Include="siho\include\siho\IndexBuffer.h" />
@@ -160,7 +161,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libs\glad.c" />
-    <ClCompile Include="samples\simple.cpp" />
+    <ClCompile Include="libs\sihoapp\Window.cpp" />
+    <ClCompile Include="samples\model.cpp" />
     <ClCompile Include="siho\src\Camera.cpp" />
     <ClCompile Include="siho\src\LightManager.cpp" />
     <ClCompile Include="siho\src\MessAssimp.cpp" />
