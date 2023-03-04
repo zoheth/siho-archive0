@@ -60,10 +60,10 @@
     <ClCompile Include="siho\src\Renderable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="libs\sihoapp\SihoApp.cpp">
+    <ClCompile Include="third_party\imgui\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="third_party\imgui\imgui_widgets.cpp">
+    <ClCompile Include="samples\simple.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

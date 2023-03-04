@@ -112,11 +112,11 @@ void MeshAssimp::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		LoadMaterialTextures(material, aiTextureType_AMBIENT, mat.textures_height);
         aiColor4D color;
         aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &color);
-        mat.diffuse = glm::vec4(color.r, color.g, color.b, color.a);
+        mat.diffuse = glm::vec3(color.r, color.g, color.b);
         aiGetMaterialColor(material, AI_MATKEY_COLOR_SPECULAR, &color);
-        mat.diffuse = glm::vec4(color.r, color.g, color.b, color.a);
+        mat.specular = glm::vec3(color.r, color.g, color.b);
         aiGetMaterialColor(material, AI_MATKEY_COLOR_AMBIENT, &color);
-        mat.diffuse = glm::vec4(color.r, color.g, color.b, color.a);
+        mat.ambient = glm::vec3(color.r, color.g, color.b);
 
 		materials_map_[material_name] = mat;
 	}

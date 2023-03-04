@@ -15,22 +15,22 @@
 
 struct Vertex {
     glm::vec3 Position;
-    glm::vec3 Normal;
-    glm::vec2 TexCoords;
-    glm::vec3 Tangent;
-    glm::vec3 Bitangent;
+    glm::vec3 Normal=glm::vec3(0.0f,0.0f,1.0f);
+    glm::vec2 TexCoords=glm::vec3(0.0f);
+    glm::vec3 Tangent=glm::vec3(1.0f,0.0f,0.0f);
+    glm::vec3 Bitangent=glm::vec3(0.0f,1.0f,0.0f);
 };
 
 struct Material {
     std::string name;
-    glm::vec4 ambient;
-    glm::vec4 diffuse;
-    glm::vec4 specular;
-    float shininess;
-    std::vector<Texture> textures_diffuse;
-    std::vector<Texture> textures_specular;
-    std::vector<Texture> textures_normal;
-    std::vector<Texture> textures_height;
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+    float shininess=32;
+    std::vector<Texture> textures_diffuse{};
+    std::vector<Texture> textures_specular{};
+    std::vector<Texture> textures_normal{};
+    std::vector<Texture> textures_height{};
 };
 
 class Renderable {
@@ -41,6 +41,17 @@ public:
         setup();
     }
 
+    explicit Renderable(std::vector<Vertex> vertices, glm::vec3 color):
+		vertices_(std::move(vertices))
+    {
+        setup();
+        material_ = new Material;
+        material_->specular=color;
+        material_->diffuse = 0.8f * color;
+        material_->ambient = 0.2f * color;
+
+    }
+
     void SetMaterialUniforms(UniformObject& uniform_object);
 
     void setup();
@@ -49,8 +60,8 @@ public:
 
 private:
     std::vector<Vertex> vertices_;
-    std::vector<unsigned int> indices_;
-    Material* material_;
+    std::vector<unsigned int> indices_{};
+    Material* material_=nullptr;
 
     unsigned int texture_slot_{};
     unsigned int vao_{};

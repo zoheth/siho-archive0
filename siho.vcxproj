@@ -160,7 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libs\glad.c" />
-    <ClCompile Include="libs\sihoapp\SihoApp.cpp" />
+    <ClCompile Include="samples\simple.cpp" />
     <ClCompile Include="siho\src\Camera.cpp" />
     <ClCompile Include="siho\src\LightManager.cpp" />
     <ClCompile Include="siho\src\MessAssimp.cpp" />
