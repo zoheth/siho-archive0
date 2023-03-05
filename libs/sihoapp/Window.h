@@ -51,4 +51,5 @@ private:
     void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 	void CursorPosCallback(double x_pos, double y_pos);
     void ScrollCallback(GLFWwindow* window, double x_offset, double y_offset);
+
 };

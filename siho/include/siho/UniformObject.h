@@ -12,16 +12,19 @@ namespace uniforms
 	static const string kView = "view";
 	static const string kProjection = "projection";
 
-	static const string kColorDiffuse = "material.diffuse";
-	static const string kColorSpecular = "material.specular";
-	static const string kColorAmbient = "material.ambient";
-	static const string kShininess = "material.shininess";
-	static const string kColorEmission = "material.emission";
+	static const string kBaseColorFactor = "material.baseColorFactor";
+	static const string kSpecularColorFactor = "material.specularColorFactor";
+	static const string kEmissiveFactor = "material.emissiveFactor";
 
-	static const string kTextureDiffuse = "material.texture_diffuse";
-	static const string kTextureSpecular = "material.texture_specular";
-	static const string kTextureNormal = "material.texture_normal";
-	static const string kTextureHeight = "material.texture_height";
+	static const string kMetallicFactor = "material.metallicFactor";
+	static const string kRoughnessFactor = "material.roughnessFactor";
+	static const string kIor = "material.ior";
+
+	static const string kBaseColorTexture = "material.baseColorTexture";
+	static const string kMetallicRoughnessTexture = "material.metallicRoughnessTexture";
+	static const string kNormalTexture = "material.normalTexture";
+	
+	static const string kEmissiveTexture = "material.emissiveTexture";
 
 	static const string kPointLightPrefix = "point_lights";
 	static const string kSpotLightPrefix = "spot_lights";

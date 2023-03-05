@@ -4,28 +4,41 @@
 
 void Renderable::SetMaterialUniforms(UniformObject& uniform_object)
 {
-	uniform_object.set(uniforms::kColorAmbient, material_->ambient);
-	uniform_object.set(uniforms::kColorDiffuse, material_->diffuse);
-	uniform_object.set(uniforms::kColorSpecular, material_->specular);
-	uniform_object.set(uniforms::kShininess, material_->shininess);
-	uniform_object.set(uniforms::kColorEmission, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	uniform_object.set(uniforms::kBaseColorFactor, material_->base_color_factor);
+	uniform_object.set(uniforms::kEmissiveFactor, material_->emissive_factor);
+	uniform_object.set(uniforms::kSpecularColorFactor, material_->specular_color_factor);
 
-	unsigned int slot = texture_slot_;
-	if(!material_->textures_diffuse.empty())
+	uniform_object.set(uniforms::kMetallicFactor, material_->metallic_factor);
+	uniform_object.set(uniforms::kRoughnessFactor, material_->roughness_factor);
+	uniform_object.set(uniforms::kIor, material_->ior);
+
+	// 纹理uniform必须是int uint会出错
+	int slot = texture_slot_;
+	if(!material_->textures_base_color.empty())
 	{
-		uniform_object.set(uniforms::kTextureDiffuse, slot);
-		material_->textures_diffuse[0].Bind(slot++);
+		uniform_object.set(uniforms::kBaseColorTexture, slot);
+		material_->textures_base_color[0].Bind(slot++);
 	}
-	if(!material_->textures_specular.empty())
+	if(!material_->textures_roughness.empty())
 	{
-		uniform_object.set(uniforms::kTextureSpecular, slot);
-		material_->textures_specular[0].Bind(slot++);
+		uniform_object.set(uniforms::kMetallicRoughnessTexture, slot);
+		material_->textures_roughness[0].Bind(slot++);
 	}
 	if(!material_->textures_normal.empty())
 	{
-		uniform_object.set(uniforms::kTextureNormal, slot);
+		uniform_object.set(uniforms::kNormalTexture, slot);
 		material_->textures_normal[0].Bind(slot++);
 	}
+	if(!material_->textures_emissive.empty())
+	{
+		uniform_object.set(uniforms::kEmissiveTexture, slot);
+		material_->textures_emissive[0].Bind(slot++);
+	}
+}
+
+void Renderable::Transform(glm::mat4 transform_matrix)
+{
+	model_matrix_=transform_matrix*model_matrix_;
 }
 
 void Renderable::setup()
@@ -68,12 +81,21 @@ void Renderable::setup()
 	glBindVertexArray(0);
 }
 
-void Renderable::render(Shader& shader)
+void Renderable::render(Shader& shader, UniformObject uniform_object)
 {
-	UniformObject temp;
-	SetMaterialUniforms(temp);
+	SetMaterialUniforms(uniform_object);
+
+	uniform_object.set(uniforms::kModel, model_matrix_);
+	uniform_object.apply(shader);
+
+	/*if(!material_->textures_emissive.empty())
+	{
+		glActiveTexture(GL_TEXTURE0+6);
+		glBindTexture(GL_TEXTURE_2D, material_->textures_emissive[0].id());
+		shader.setInt(uniforms::kEmissiveTexture, 6);
+	}*/
+	Texture::Unbind();
 	glBindVertexArray(vao_);
-	temp.apply(shader);
 	if(indices_.empty())
 		glDrawArrays(GL_TRIANGLES, 0, vertices_.size());
 	else

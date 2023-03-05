@@ -10,7 +10,7 @@ public:
 
 	[[nodiscard]] unsigned int id() const { return id_; }
 
-    void Bind(unsigned int slot = 0) const;
+    void Bind(int slot = 0) const;
     static void Unbind();
 
 	[[nodiscard]] int width() const { return width_; }

@@ -21,14 +21,18 @@ struct Vertex {
 
 struct Material {
     std::string name;
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
-    float shininess=32;
-    std::vector<Texture> textures_diffuse{};
-    std::vector<Texture> textures_specular{};
+    glm::vec4 base_color_factor=glm::vec4(1.0);
+    glm::vec3 specular_color_factor= glm::vec4(0.0);
+	glm::vec3 emissive_factor= glm::vec4(0.0);
+
+    float metallic_factor=0.0f;
+    float roughness_factor=1.0f;
+    float ior=1.5f;
+
+    std::vector<Texture> textures_base_color{};
+    std::vector<Texture> textures_roughness{};
     std::vector<Texture> textures_normal{};
-    std::vector<Texture> textures_height{};
+    std::vector<Texture> textures_emissive{};
 };
 
 class Renderable {
@@ -43,25 +47,25 @@ public:
 		vertices_(std::move(vertices))
     {
         setup();
-        material_ = new Material;
-        material_->specular=color;
-        material_->diffuse = 0.8f * color;
-        material_->ambient = 0.2f * color;
-
+        // material_ = new Material;
     }
 
     void SetMaterialUniforms(UniformObject& uniform_object);
 
+    void Transform(glm::mat4 transform_matrix);
+
     void setup();
 
-    void render(Shader& shader);
+    void render(Shader& shader, UniformObject uniform_object);
 
 private:
     std::vector<Vertex> vertices_;
     std::vector<unsigned int> indices_{};
     Material* material_=nullptr;
 
-    unsigned int texture_slot_{};
+    glm::mat4 model_matrix_=glm::mat4(1.0f);
+
+    int texture_slot_=1;
     unsigned int vao_{};
     unsigned int vbo_{};
     unsigned int ebo_{};

@@ -36,7 +36,7 @@ Window::Window(int width, int height, const std::string& title)
 	});
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_FRAMEBUFFER_SRGB);
+
 	glfwSetInputMode(glfw_window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 

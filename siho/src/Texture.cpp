@@ -7,7 +7,6 @@
 Texture::Texture(const std::string& path, const bool gamma)
 	:file_path_(path)
 {
-    stbi_set_flip_vertically_on_load(1);
 
     if(unsigned char* data = stbi_load(path.c_str(), &width_, &height_, &bpp_, 0))
 	{
@@ -50,10 +49,15 @@ Texture::~Texture()
     //glDeleteTextures(1, &id_);
 }
 
-void Texture::Bind(unsigned slot) const
+void Texture::Bind(int slot) const
 {
     glActiveTexture(GL_TEXTURE0 + slot);
-    glBindTexture(GL_TEXTURE_2D, id_);
+    if(glIsTexture(id_))
+		glBindTexture(GL_TEXTURE_2D, id_);
+    else
+    {
+        throw "无效的纹理" + file_path_;
+    }
 }
 
 void Texture::Unbind()

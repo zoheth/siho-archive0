@@ -16,10 +16,10 @@ public:
     void render(Shader& shader) {
         // 设置光源uniform
         light_manager_.SetUniforms(uniform_obj_);
-        uniform_obj_.apply(shader);
+
         for (auto& renderable : renderables_) {
 
-            renderable.render(shader);
+            renderable.render(shader, uniform_obj_);
         }
     }
     void set_renderables(std::vector<Renderable>&& renderables) { renderables_ = std::move(renderables); }

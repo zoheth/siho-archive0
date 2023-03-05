@@ -5,9 +5,11 @@ layout (location = 2) in vec2 aTexCoords;
 layout (location = 3) in vec3 aTangent;
 layout (location = 4) in vec3 aBitangent;
 
-out vec3 normal;
-out vec3 frag_pos;
-out vec2 tex_coords;
+out vec3 position;
+out vec3 worldNormal;
+out vec2 texCoord;
+
+out vec3 viewDir;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -15,8 +17,11 @@ uniform mat4 projection;
 
 void main()
 {
+    vec3 worldPos = vec3(model * vec4(position, 1.0));
+    viewDir = normalize(-vec3(view * vec4(worldPos, 1.0)));
+
     gl_Position = projection * view * model * vec4(aPos, 1.0);
-    frag_pos = vec3(model * vec4(aPos, 1.0));
-    normal = mat3(transpose(inverse(model))) * aNormal;
-    tex_coords = aTexCoords;
+    position = vec3(model * vec4(aPos, 1.0));
+    worldNormal = normalize(mat3(transpose(inverse(model))) * aNormal);
+    texCoord = aTexCoords;
 }
