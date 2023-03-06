@@ -12,27 +12,31 @@ void Renderable::SetMaterialUniforms(UniformObject& uniform_object)
 	uniform_object.set(uniforms::kRoughnessFactor, material_->roughness_factor);
 	uniform_object.set(uniforms::kIor, material_->ior);
 
-	// 纹理uniform必须是int uint会出错
-	int slot = texture_slot_;
+
+	unsigned int slot = texture_slot_;
+
+	uniform_object.set(uniforms::kEmissiveTexture, 4);
+	if (!material_->textures_emissive.empty())
+	{
+		material_->textures_emissive[0].Bind(4);
+	}
+
+	uniform_object.set(uniforms::kNormalTexture, 3);
+	if (!material_->textures_normal.empty())
+	{
+		material_->textures_normal[0].Bind(3);
+	}
+
+	uniform_object.set(uniforms::kBaseColorTexture, 1);
 	if(!material_->textures_base_color.empty())
 	{
-		uniform_object.set(uniforms::kBaseColorTexture, slot);
-		material_->textures_base_color[0].Bind(slot++);
+		material_->textures_base_color[0].Bind(1);
 	}
+
+	uniform_object.set(uniforms::kMetallicRoughnessTexture, 2);
 	if(!material_->textures_roughness.empty())
 	{
-		uniform_object.set(uniforms::kMetallicRoughnessTexture, slot);
-		material_->textures_roughness[0].Bind(slot++);
-	}
-	if(!material_->textures_normal.empty())
-	{
-		uniform_object.set(uniforms::kNormalTexture, slot);
-		material_->textures_normal[0].Bind(slot++);
-	}
-	if(!material_->textures_emissive.empty())
-	{
-		uniform_object.set(uniforms::kEmissiveTexture, slot);
-		material_->textures_emissive[0].Bind(slot++);
+		material_->textures_roughness[0].Bind(2);
 	}
 }
 
@@ -94,11 +98,16 @@ void Renderable::render(Shader& shader, UniformObject uniform_object)
 		glBindTexture(GL_TEXTURE_2D, material_->textures_emissive[0].id());
 		shader.setInt(uniforms::kEmissiveTexture, 6);
 	}*/
-	Texture::Unbind();
 	glBindVertexArray(vao_);
 	if(indices_.empty())
 		glDrawArrays(GL_TRIANGLES, 0, vertices_.size());
 	else
 		glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
+
+	for (int i = 0; i < 8; i++) {
+		glActiveTexture(GL_TEXTURE0 + i);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	Texture::Unbind();
 }

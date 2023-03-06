@@ -32,13 +32,13 @@ void UniformObject::apply(const Shader& shader) const
 		{
 			shader.setFloat(name, std::get<float>(value));
 		}
-		else if (std::holds_alternative<unsigned int>(value))
-		{
-			shader.setUInt(name, std::get<unsigned int>(value));
-		}
 		else if (std::holds_alternative<int>(value))
 		{
 			shader.setInt(name, std::get<int>(value));
+		}
+		else if (std::holds_alternative<unsigned int>(value))
+		{
+			shader.setInt(name, std::get<unsigned int>(value));
 		}
 		else if (std::holds_alternative<glm::vec2>(value))
 		{

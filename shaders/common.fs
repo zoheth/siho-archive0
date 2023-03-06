@@ -32,8 +32,6 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0);
 #define PI 3.14159265359
 
 void main() {
-    //fragColor = texture(material.metallicRoughnessTexture, texCoord);
-    //return;
     vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0)); // Example directional light direction
 
     vec4 baseColor = material.baseColorFactor;
@@ -56,11 +54,15 @@ void main() {
         emissive = texture(material.emissiveTexture, texCoord).rgb;
     }
 
+
     vec3 specularColor = material.specularColorFactor;
     float ior = material.ior;
 
     // Compute lighting
     vec3 diffuse = baseColor.rgb * (1.0 - metallic);
+
+    fragColor = vec4(diffuse,1);
+    return;
 
     vec3 F0 = mix(vec3(0.04), specularColor, metallic);
     vec3 specular = F0 * specularReflection(viewDir, worldNormal, F0, roughness);

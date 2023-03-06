@@ -23,7 +23,6 @@ namespace uniforms
 	static const string kBaseColorTexture = "material.baseColorTexture";
 	static const string kMetallicRoughnessTexture = "material.metallicRoughnessTexture";
 	static const string kNormalTexture = "material.normalTexture";
-	
 	static const string kEmissiveTexture = "material.emissiveTexture";
 
 	static const string kPointLightPrefix = "point_lights";

@@ -52,12 +52,8 @@ Texture::~Texture()
 void Texture::Bind(int slot) const
 {
     glActiveTexture(GL_TEXTURE0 + slot);
-    if(glIsTexture(id_))
-		glBindTexture(GL_TEXTURE_2D, id_);
-    else
-    {
-        throw "无效的纹理" + file_path_;
-    }
+    glBindTexture(GL_TEXTURE_2D, id_);
+
 }
 
 void Texture::Unbind()
