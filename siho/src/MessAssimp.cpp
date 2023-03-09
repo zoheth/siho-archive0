@@ -136,6 +136,7 @@ void MeshAssimp::ProcessMaterial(const aiMaterial* material, Material& output_ma
         output_material.roughness_factor = roughness_factor;
     }
 
+
     if (float ior; material->Get(AI_MATKEY_REFRACTI, ior) == aiReturn_SUCCESS) {
         output_material.ior = ior;
     }
@@ -147,6 +148,7 @@ void MeshAssimp::ProcessMaterial(const aiMaterial* material, Material& output_ma
     if (aiColor4D specular_color_factor; material->Get(AI_MATKEY_COLOR_SPECULAR, specular_color_factor) == AI_SUCCESS) {
         output_material.specular_color_factor = glm::vec3(specular_color_factor.r, specular_color_factor.g, specular_color_factor.b);
     }
+
     aiString filename;
     if(material->GetTexture(AI_MATKEY_BASE_COLOR_TEXTURE, &filename)== aiReturn_SUCCESS)
     {

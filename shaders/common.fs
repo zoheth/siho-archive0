@@ -1,8 +1,7 @@
-#version 460 core
-in vec3 position;
+ï»¿#version 460 core
+in vec3 worldPos;
 in vec3 worldNormal;
 in vec2 texCoord;
-in vec3 viewDir;
 
 
 out vec4 fragColor;
@@ -20,85 +19,124 @@ struct Material {
     float ior;
 };
 
-uniform sampler2D caonima;
+struct PointLight {
+    vec3 position;
+    vec3 color;
+    float intensity;
+};
 
 uniform Material material;
+uniform PointLight pointLights[4];
+uniform int pointLightsCount;
+uniform vec3 camPos;
 
-vec3 specularReflection(vec3 viewDir, vec3 normal, vec3 F0, float roughness);
-float distributionGGX(float cosTheta, float roughness);
-float geometrySchlickGGX(float cosTheta, float roughness);
+
+const float PI = 3.14159265359;
+
+float DistributionGGX(vec3 N, vec3 H, float roughness);
+float GeometrySchlickGGX(float NdotV, float roughness);
+float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness);
 vec3 fresnelSchlick(float cosTheta, vec3 F0);
 
-#define PI 3.14159265359
 
-void main() {
-    vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0)); // Example directional light direction
-
-    vec4 baseColor = material.baseColorFactor;
-    
-
-    if (textureSize(material.baseColorTexture, 0).x > 0) {
-        baseColor *= texture(material.baseColorTexture, texCoord);
+void main()
+{
+    vec3 albedo     = material.baseColorFactor.rgb;
+    if(textureSize(material.baseColorTexture, 0).x > 0) 
+    {
+        albedo     *= pow(texture(material.baseColorTexture, texCoord).rgb, vec3(2.2));
     }
-    
-    float metallic = material.metallicFactor;
+    float metallic  = material.metallicFactor;
     float roughness = material.roughnessFactor;
+    float ao = 1.0;
     if (textureSize(material.metallicRoughnessTexture, 0).x > 0) {
         vec4 tex = texture(material.metallicRoughnessTexture, texCoord);
         metallic *= tex.b;
         roughness *= tex.g;
+        ao *= tex.a;
     }
-
     vec3 emissive = material.emissiveFactor;
     if (textureSize(material.emissiveTexture, 0).x > 0) {
         emissive = texture(material.emissiveTexture, texCoord).rgb;
     }
+    
+    vec3 V = normalize(camPos - worldPos);
+
+    vec3 F0 = vec3(0.04); 
+    F0 = mix(F0, albedo, metallic);
+
+    vec3 Lo = vec3(0.0);
+    for(int i = 0; i<pointLightsCount; ++i)
+    {
+        vec3 L = normalize(pointLights[i].position - worldPos);
+        vec3 H = normalize(V + L);
+
+        float distance = length(pointLights[i].position - worldPos);
+        float attenuation = 1.0 / (distance * distance);
+        vec3 radiance = pointLights[i].color * attenuation;
+
+        float NDF = DistributionGGX(worldNormal, H, roughness);        
+        float G   = GeometrySmith(worldNormal, V, L, roughness);      
+        vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
+
+        vec3 kS = F;
+        vec3 kD = vec3(1.0) - kS;
+        kD *= 1.0 - metallic;
+
+        vec3 numerator    = NDF * G * F;
+        float denominator = 4.0 * max(dot(worldNormal, V), 0.0) * max(dot(worldNormal, L), 0.0) + 0.0001;
+        vec3 specular     = numerator / denominator;
+
+        float NdotL = max(dot(worldNormal, L), 0.0);                
+        Lo += (kD * albedo / PI + specular) * radiance * NdotL; 
+    }
+    vec3 ambient = vec3(0.03) * albedo * ao;
+    vec3 color = ambient + Lo + emissive;
+	
+    color = color / (color + vec3(1.0));
+    color = pow(color, vec3(1.0/2.2));  
+   
+    fragColor = vec4(color, 1.0);
 
 
-    vec3 specularColor = material.specularColorFactor;
-    float ior = material.ior;
-
-    // Compute lighting
-    vec3 diffuse = baseColor.rgb * (1.0 - metallic);
-
-    fragColor = vec4(diffuse,1);
-    return;
-
-    vec3 F0 = mix(vec3(0.04), specularColor, metallic);
-    vec3 specular = F0 * specularReflection(viewDir, worldNormal, F0, roughness);
-    vec3 ambient = 0.02 * baseColor.rgb * diffuse;
-
-    vec3 lighting = diffuse * max(dot(worldNormal, lightDir), 0.0) + specular * max(dot(reflect(-lightDir, worldNormal), viewDir), 0.0) + ambient;
-
-    fragColor = vec4(lighting + emissive, baseColor.a);
 }
 
-vec3 specularReflection(vec3 viewDir, vec3 normal, vec3 F0, float roughness) {
-    vec3 H = normalize(viewDir + normal);
-    float dotNH = max(dot(normal, H), 0.0);
-    float d = distributionGGX(dotNH, roughness);
-    float G = geometrySchlickGGX(dotNH, roughness);
-    vec3 F = fresnelSchlick(max(dot(normal, viewDir), 0.0), F0);
-    return (d * G * F) / (4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, H), 0.0) + 0.001);
+
+vec3 fresnelSchlick(float cosTheta, vec3 F0)
+{
+    return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+} 
+
+float DistributionGGX(vec3 N, vec3 H, float roughness)
+{
+    float a      = roughness*roughness;
+    float a2     = a*a;
+    float NdotH  = max(dot(N, H), 0.0);
+    float NdotH2 = NdotH*NdotH;
+	
+    float num   = a2;
+    float denom = (NdotH2 * (a2 - 1.0) + 1.0);
+    denom = PI * denom * denom;
+	
+    return num / denom;
 }
 
-float distributionGGX(float cosTheta, float roughness) {
-    float alpha = roughness * roughness;
-    float alphaSqr = alpha * alpha;
-    float cosThetaSqr = cosTheta * cosTheta;
-    float denominator = cosThetaSqr * (alphaSqr - 1.0) + 1.0;
-    return alphaSqr / (PI * denominator * denominator + 0.001);
-}
+float GeometrySchlickGGX(float NdotV, float roughness)
+{
+    float r = (roughness + 1.0);
+    float k = (r*r) / 8.0;
 
-// ¼ÆËã geometry Schlick-GGX º¯Êý
-float geometrySchlickGGX(float cosTheta, float roughness) {
-    float k = roughness * roughness / 2.0;
-    float numerator = cosTheta;
-    float denominator = cosTheta * (1.0 - k) + k;
-    return numerator / denominator;
+    float num   = NdotV;
+    float denom = NdotV * (1.0 - k) + k;
+	
+    return num / denom;
 }
-
-// ¼ÆËã Fresnel Schlick º¯Êý
-vec3 fresnelSchlick(float cosTheta, vec3 F0) {
-    return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
+{
+    float NdotV = max(dot(N, V), 0.0);
+    float NdotL = max(dot(N, L), 0.0);
+    float ggx2  = GeometrySchlickGGX(NdotV, roughness);
+    float ggx1  = GeometrySchlickGGX(NdotL, roughness);
+	
+    return ggx1 * ggx2;
 }

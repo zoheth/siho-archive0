@@ -1,3 +1,7 @@
+#include "imgui.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
+
 #include <siho/Renderer.h>
 #include <siho/MeshAssimp.h>
 #include <siho/Scene.h>
@@ -20,15 +24,15 @@ int main(void)
 
 	MeshAssimp mesh_assimp;
 	//mesh_assimp.LoadModel("E:\\Study\\OpenGL\\Project0\\Models\\Girl\\untitled.obj.ass");
-	mesh_assimp.LoadModel("C:\\3D Models\\lamp.gltf");
+	mesh_assimp.LoadModel("C:\\3D Models\\Helmet\\untitled.gltf");
 
 	Scene scene;
 	scene.set_renderables(mesh_assimp.renderables());
 
 	scene.AddLight(PointLight{
-		glm::vec3(0.0f, 0.0f, -1.0f),
+		glm::vec3(0.0f, 10.0f, -1.0f),
 		glm::vec3(1.0f, 1.0f, 1.0f),
-		1.0f });
+		250.0f });
 	Shader shader("shaders\\common.vs", "shaders\\common.fs");
 	shader.use();
 
@@ -42,22 +46,26 @@ int main(void)
 
 	window.SetCamera(&camera);
 
+
 	glEnable(GL_DEPTH_TEST);
 	do
 	{
-		window.MakeContextCurrent();
+		window.ProcessContext();
 
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		window.ShowLightEditorWindow(scene);
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//ImGui_ImplGlfw_NewFrame();
+
+
 
 		camera.SetUniforms(uniform_camera);
 		uniform_camera.apply(shader);
 
 		scene.render(shader);
 
+		window.DrawUi();
+
 		window.SwapBuffers();
-		window.PollEvents();
 
 	} while (window.ShouldClose());
 

@@ -1,7 +1,7 @@
 ﻿#include <siho/Camera.h>
 #include <glm/gtc/matrix_transform.hpp>
 
-Camera::Camera(glm::vec3 position, glm::vec3 up, double yaw, double pitch): front_(glm::vec3(0.0f, 0.0f, -1.0f)), movement_speed_(kSpeed), mouse_sensitivity_(kSensitivity), zoom_(kZoom)
+Camera::Camera(glm::vec3 position, glm::vec3 up, double yaw, double pitch): front_(glm::vec3(0.0f, 1.0f, -1.0f)), movement_speed_(kSpeed), mouse_sensitivity_(kSensitivity), zoom_(kZoom)
 {
 	position_ = position;
 	world_up_ = up;
@@ -23,6 +23,7 @@ void Camera::SetUniforms(UniformObject& uniform_object) const
 {
 	uniform_object.set(uniforms::kView, glm::lookAt(position_, position_ + front_, up_));
 	uniform_object.set(uniforms::kProjection, projection_);
+	uniform_object.set(uniforms::kCameraPosition, position_);
 }
 
 void Camera::SetProjection(const double aspect, const double near, const double far)

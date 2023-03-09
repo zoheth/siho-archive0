@@ -12,6 +12,8 @@ namespace uniforms
 	static const string kView = "view";
 	static const string kProjection = "projection";
 
+	static const string kCameraPosition = "camPos";
+
 	static const string kBaseColorFactor = "material.baseColorFactor";
 	static const string kSpecularColorFactor = "material.specularColorFactor";
 	static const string kEmissiveFactor = "material.emissiveFactor";
@@ -25,10 +27,10 @@ namespace uniforms
 	static const string kNormalTexture = "material.normalTexture";
 	static const string kEmissiveTexture = "material.emissiveTexture";
 
-	static const string kPointLightPrefix = "point_lights";
-	static const string kSpotLightPrefix = "spot_lights";
-	static const string kPointLightsCount = "point_lights_count";
-	static const string kSpotLightsCount = "spot_lights_count";
+	static const string kPointLightPrefix = "pointLights";
+	static const string kSpotLightPrefix = "spotLights";
+	static const string kPointLightsCount = "pointLightsCount";
+	static const string kSpotLightsCount = "spotLightsCount";
 
 	enum class Light
 	{

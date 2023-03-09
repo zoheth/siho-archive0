@@ -137,6 +137,8 @@
     <ClInclude Include="siho\include\siho\UniformObject.h" />
     <ClInclude Include="siho\include\siho\VertexBuffer.h" />
     <ClInclude Include="siho\include\siho\Shader.h" />
+    <ClInclude Include="third_party\imgui\backends\imgui_impl_glfw.h" />
+    <ClInclude Include="third_party\imgui\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="third_party\imgui\imconfig.h" />
     <ClInclude Include="third_party\imgui\imgui.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -174,6 +176,8 @@
     <ClCompile Include="siho\src\Texture.cpp" />
     <ClCompile Include="siho\src\UniformObject.cpp" />
     <ClCompile Include="siho\src\VertexBuffer.cpp" />
+    <ClCompile Include="third_party\imgui\backends\imgui_impl_glfw.cpp" />
+    <ClCompile Include="third_party\imgui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="third_party\imgui\imgui.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>

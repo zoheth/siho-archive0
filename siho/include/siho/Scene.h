@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <utility>
 #include <vector>
 
 #include "LightManager.h"
@@ -23,6 +24,13 @@ public:
         }
     }
     void set_renderables(std::vector<Renderable>&& renderables) { renderables_ = std::move(renderables); }
+    void set_uniform_obj(UniformObject uniform_object)
+	{
+        uniform_obj_ = std::move(uniform_object);
+	}
+
+    PointLight& point_light(const size_t i) { return light_manager_.point_lights_[i]; }
+	[[nodiscard]] size_t point_light_count() const { return light_manager_.point_lights_.size(); }
 
     std::vector<Renderable>& renderables() { return renderables_; }
 private:

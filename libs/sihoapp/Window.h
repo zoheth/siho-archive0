@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include "imgui.h"
+#include "siho/Scene.h"
 
 
 struct ImFont;
@@ -13,14 +14,21 @@ class Window {
 public:
     Window(int width, int height, const std::string& title);
 
-    void MakeContextCurrent();
+    void ProcessContext();
     [[nodiscard]] bool ShouldClose() const;
     void SwapBuffers() const;
 	void PollEvents();
 
+    void DrawUi() const;
+
+    [[nodiscard]] int width() const { return width_; }
+    [[nodiscard]] int height() const { return height_; }
+    [[nodiscard]] double delta_time() const { return delta_time_; }
+    [[nodiscard]] GLFWwindow* glfw_window() const {return glfw_window_;}
+
     void SetCamera(Camera* camera);
 
-    void drawUi(std::function<void()> uiFunc);
+    void ShowLightEditorWindow(Scene& scene);
 
     void setKeyCallback(GLFWkeyfun callback);
     void setMouseButtonCallback(GLFWmousebuttonfun callback);
@@ -28,6 +36,7 @@ public:
     void setScrollCallback(GLFWscrollfun callback);
 
 private:
+    void InitUi() const;
     GLFWwindow* glfw_window_;
     ImFontAtlas font_atlas_;
     ImFont* font_;
@@ -36,11 +45,14 @@ private:
     int width_;
     int height_;
 
+    bool roam_;
     bool mouse_captured_;
     double last_x_;
     double last_y_;
     double delta_time_{};
     double last_frame_{};
+
+    bool show_light_editor_=true;
 
     void ProcessInput();
 

@@ -2,7 +2,8 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include <assimp/pbrmaterial.h>
+#include <assimp/material.h>
+#include <assimp/GltfMaterial.h>
 
 int main()
 {
@@ -37,7 +38,7 @@ int main()
 
         // 打印材质的金属度
         float metallic;
-        material->Get(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLIC_FACTOR, metallic);
+        material->Get(AI_MATKEY_METALLIC_FACTOR, metallic);
         std::cout << "Metallic: " << metallic << std::endl;
 
         // 打印材质的粗糙度

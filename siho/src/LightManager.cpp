@@ -11,9 +11,13 @@ void LightManager::SetUniforms(UniformObject& uniform_obj) const {
 	const int point_light_count = static_cast<int>(point_lights_.size());
     uniform_obj.set(uniforms::kPointLightsCount, point_light_count);
     for (int i = 0; i < point_light_count; ++i) {
-
-        uniform_obj.set(uniforms::PointLight(i,uniforms::Light::POSITION), point_lights_[i].position);
-        uniform_obj.set(uniforms::PointLight(i, uniforms::Light::COLOR), point_lights_[i].color);
+        glm::vec3 position = point_lights_[i].position;
+        float cos_a = cos(point_lights_[i].angle_y);
+        float sin_a = sin(point_lights_[i].angle_y);
+        position.x = point_lights_[i].position.x * cos_a + point_lights_[i].position.z * sin_a;
+        position.z = -point_lights_[i].position.x * sin_a + point_lights_[i].position.z * cos_a;
+        uniform_obj.set(uniforms::PointLight(i,uniforms::Light::POSITION), position);
+        uniform_obj.set(uniforms::PointLight(i, uniforms::Light::COLOR), point_lights_[i].color * point_lights_[i].intensity);
         uniform_obj.set(uniforms::PointLight(i, uniforms::Light::INTENSITY), point_lights_[i].intensity);
     }
 

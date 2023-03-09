@@ -9,7 +9,8 @@
 #include <assimp/postprocess.h>
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
-#include <assimp/pbrmaterial.h>
+#include <assimp/material.h>
+#include <assimp/GltfMaterial.h>
 
 #include <siho/Material.h>
 #include "utils/EntityManager.h"
