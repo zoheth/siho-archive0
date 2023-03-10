@@ -12,25 +12,25 @@ namespace uniforms
 	static const string kView = "view";
 	static const string kProjection = "projection";
 
-	static const string kCameraPosition = "camPos";
+	static const string kCameraPosition = "u_CamPos";
 
-	static const string kBaseColorFactor = "material.baseColorFactor";
-	static const string kSpecularColorFactor = "material.specularColorFactor";
-	static const string kEmissiveFactor = "material.emissiveFactor";
+	static const string kBaseColorFactor = "u_Material.baseColorFactor";
+	static const string kSpecularColorFactor = "u_Material.specularColorFactor";
+	static const string kEmissiveFactor = "u_Material.emissiveFactor";
 
-	static const string kMetallicFactor = "material.metallicFactor";
-	static const string kRoughnessFactor = "material.roughnessFactor";
-	static const string kIor = "material.ior";
+	static const string kMetallicFactor = "u_Material.metallicFactor";
+	static const string kRoughnessFactor = "u_Material.roughnessFactor";
+	static const string kIor = "u_Material.ior";
 
-	static const string kBaseColorTexture = "material.baseColorTexture";
-	static const string kMetallicRoughnessTexture = "material.metallicRoughnessTexture";
-	static const string kNormalTexture = "material.normalTexture";
-	static const string kEmissiveTexture = "material.emissiveTexture";
+	static const string kBaseColorTexture = "u_Material.baseColorTexture";
+	static const string kMetallicRoughnessTexture = "u_Material.metallicRoughnessTexture";
+	static const string kNormalTexture = "u_Material.normalTexture";
+	static const string kEmissiveTexture = "u_Material.emissiveTexture";
 
-	static const string kPointLightPrefix = "pointLights";
-	static const string kSpotLightPrefix = "spotLights";
-	static const string kPointLightsCount = "pointLightsCount";
-	static const string kSpotLightsCount = "spotLightsCount";
+	static const string kPointLightPrefix = "u_PointLights";
+	static const string kSpotLightPrefix = "u_SpotLights";
+	static const string kPointLightsCount = "u_PointLightsCount";
+	static const string kSpotLightsCount = "u_SpotLightsCount";
 
 	enum class Light
 	{
@@ -71,6 +71,9 @@ namespace uniforms
 			}
 		}();
 	}
+
+	static const string kScreenTexture = "u_ScreenTexture";
+	static const string kScreenTextureCount = "u_ScreenTextureCount";
 }
 
 class Shader;

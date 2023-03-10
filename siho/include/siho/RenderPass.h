@@ -8,44 +8,100 @@ class Camera;
 class RenderPass {
 public:
 	virtual ~RenderPass() = default;
-	RenderPass(RenderTarget* target, Shader* shader) : shader_(shader), target_(target) {}
+	RenderPass(RenderTarget* target, Shader& shader) : shader_(shader), target_(target) {}
     virtual void render() = 0;
-    virtual void render(Scene& scene) = 0;
-    virtual void setRenderTarget(RenderTarget* target) = 0;
-    virtual void addDependency(RenderPass* pass) = 0;
-    [[nodiscard]] Shader* shader() const { return shader_; }
+
+    [[nodiscard]] Shader& shader() const { return shader_; }
     [[nodiscard]] RenderTarget* target() const { return target_; }
 protected:
-    Shader* shader_;
-    RenderTarget* target_;
+    Shader& shader_;
+    RenderTarget* target_=nullptr;
 };
 
-class ShadowMapPass : public RenderPass {
+
+class FinalRenderPass final : public RenderPass
+{
+	public:
+	FinalRenderPass(RenderTarget* target, Shader& shader, RenderPass& prev_render_pass)
+		: RenderPass(target, shader), prev_render_pass_(prev_render_pass)
+	{
+	}
+
+	void render() override;
+private:
+	RenderPass& prev_render_pass_;
+};
+
+
+class BlendPass final : public RenderPass
+{
 public:
-	ShadowMapPass(RenderTarget* target, Shader* shader)
+	BlendPass(RenderTarget* target, Shader& shader)
 		: RenderPass(target, shader)
 	{
 	}
 
-    void render(Scene& scene) override;
-
-    void setRenderTarget(RenderTarget* target) override;
-
-    void addDependency(RenderPass* pass) override;
+	void render() override;
+	void AddTexture(const unsigned int texture_id) { blend_texture_ids_.push_back(texture_id); }
+private:
+	std::vector<unsigned int> blend_texture_ids_;
 };
 
-class FinalRenderPass : public RenderPass {
+
+class ShadowMapPass final : public RenderPass {
 public:
-	FinalRenderPass(RenderTarget* target, Shader* shader)
-		: RenderPass(target, shader)
+	ShadowMapPass(RenderTarget* target, Shader& shader, Scene& scene)
+		: RenderPass(target, shader), scene_(scene)
 	{
 	}
 
     void render() override;
-
-    void setRenderTarget(RenderTarget* target) override;
-
-    void addDependency(RenderPass* pass) override;
 private:
+	Scene& scene_;
+};
+
+
+class SceneRenderPass final : public RenderPass {
+public:
+	SceneRenderPass(RenderTarget* target, Shader& shader, Scene& scene)
+		: RenderPass(target, shader), scene_(scene)
+	{
+	}
+
+    void render() override;
+	void SetShadowMapPass(ShadowMapPass* shadow_map_pass) { shadow_map_pass_ = shadow_map_pass; }
+
+private:
+	Scene& scene_;
     ShadowMapPass* shadow_map_pass_=nullptr;
+};
+
+
+class BlurPass final : public RenderPass
+{
+public:
+	BlurPass(RenderTarget* target, Shader& shader, SceneRenderPass& scene_render_pass)
+		: RenderPass(target, shader), scene_render_pass_(scene_render_pass)
+	{
+		other_target_ = new RenderTarget(target->width(), target->height());
+	}
+	void render() override;
+	[[nodiscard]] RenderTarget* scene_render_target() const { return scene_render_pass_.target(); }
+private:
+	SceneRenderPass& scene_render_pass_;
+	RenderTarget* other_target_;
+};
+
+
+class BloomPass final : public RenderPass
+{
+public:
+	BloomPass(RenderTarget* target, Shader& shader, BlurPass& blur_pass)
+		: RenderPass(target, shader), blur_pass_(blur_pass)
+	{
+	}
+
+	void render() override;
+private:
+	BlurPass& blur_pass_;
 };

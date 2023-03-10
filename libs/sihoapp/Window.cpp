@@ -16,6 +16,7 @@ Window::Window(int width, int height, const std::string& title)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	glfw_window_ = glfwCreateWindow(width, height, "Siho", nullptr, nullptr);
 	if (glfw_window_ == nullptr)
@@ -107,7 +108,7 @@ void Window::ShowLightEditorWindow(Scene& scene)
 			ImGui::SliderFloat3("Position", reinterpret_cast<float*>(&light.position), -10.0f, 10.0f);
 			ImGui::ColorEdit3("Color", reinterpret_cast<float*>(&light.color));
 			ImGui::SliderAngle("Rotation", &light.angle_y, 0.0f, 360.0f);
-
+			ImGui::DragFloat("Intensity", &light.intensity);
 		}
 		ImGui::PopID();
 	}

@@ -22,6 +22,7 @@ void UniformObject::set(const std::string& name, const T& value)
 
 void UniformObject::apply(const Shader& shader) const
 {
+	shader.use();
 	for (auto [name, value] : uniform_data_)
 	{
 		if (std::holds_alternative<bool>(value))

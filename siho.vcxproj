@@ -193,8 +193,12 @@
     <ClCompile Include="third_party\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\blend.fs" />
+    <None Include="shaders\blur.fs" />
     <None Include="shaders\common.fs" />
     <None Include="shaders\common.vs" />
+    <None Include="shaders\post_processing.fs" />
+    <None Include="shaders\post_processing.vs" />
     <None Include="third_party\imgui\.editorconfig" />
     <None Include="third_party\imgui\.gitattributes" />
     <None Include="third_party\imgui\.gitignore" />

@@ -65,7 +65,7 @@ private:
 
     glm::mat4 model_matrix_=glm::mat4(1.0f);
 
-    int texture_slot_=1;
+    int texture_slot_=2;
     unsigned int vao_{};
     unsigned int vbo_{};
     unsigned int ebo_{};
