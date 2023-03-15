@@ -31,6 +31,7 @@ public:
     void SetProjection(double aspect, double near, double far);
 
     glm::mat4 GetViewMatrix() const;
+    glm::mat4 GetProjectionMatrix() const { return projection_; }
 
     void ProcessKeyboard(CameraMovement direction, double delta_time);
 

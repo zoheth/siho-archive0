@@ -2,6 +2,7 @@
 in vec3 worldPos;
 in vec3 worldNormal;
 in vec2 texCoord;
+in mat3 TBN;
 
 
 layout (location = 0) out vec4 fragColor;
@@ -39,6 +40,8 @@ float GeometrySchlickGGX(float NdotV, float roughness);
 float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness);
 vec3 fresnelSchlick(float cosTheta, vec3 F0);
 
+float V_SmithGGXCorrelatedFast(float NoV, float NoL, float roughness);
+
 
 void main()
 {
@@ -58,9 +61,12 @@ void main()
     }
     vec3 emissive = u_Material.emissiveFactor;
     if (textureSize(u_Material.emissiveTexture, 0).x > 0) {
-        emissive = texture(u_Material.emissiveTexture, texCoord).rgb * 2.5;
+        emissive = pow(texture(u_Material.emissiveTexture, texCoord).rgb, vec3(2.2)) * 10;
     }
-    vec3 V = normalize(u_CamPos - worldPos);
+    vec3 N = normalize(texture(u_Material.normalTexture, texCoord).rgb * 2.0 - 1.0);
+    vec3 viewPos = TBN * u_CamPos;
+    vec3 fragPos = TBN * worldPos;
+    vec3 V = normalize(viewPos - fragPos);
 
     vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
@@ -68,15 +74,16 @@ void main()
     vec3 Lo = vec3(0.0);
     for(int i = 0; i<u_PointLightsCount; ++i)
     {
-        vec3 L = normalize(u_PointLights[i].position - worldPos);
+        vec3 L = TBN * u_PointLights[i].position - fragPos;
+        float distance = length(L);
+        L = normalize(L);
         vec3 H = normalize(V + L);
-
-        float distance = length(u_PointLights[i].position - worldPos);
+        
         float attenuation = 1.0 / (distance * distance);
         vec3 radiance = u_PointLights[i].color * attenuation;
 
-        float NDF = DistributionGGX(worldNormal, H, roughness);        
-        float G   = GeometrySmith(worldNormal, V, L, roughness);      
+        float NDF = DistributionGGX(N, H, roughness);        
+        float G   = GeometrySmith(N, V, L, roughness);      
         vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
 
         vec3 kS = F;
@@ -84,10 +91,10 @@ void main()
         kD *= 1.0 - metallic;
 
         vec3 numerator    = NDF * G * F;
-        float denominator = 4.0 * max(dot(worldNormal, V), 0.0) * max(dot(worldNormal, L), 0.0) + 0.0001;
+        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
         vec3 specular     = numerator / denominator;
 
-        float NdotL = max(dot(worldNormal, L), 0.0);                
+        float NdotL = max(dot(N, L), 0.0);                
         Lo += (kD * albedo / PI + specular) * radiance * NdotL; 
     }
     vec3 ambient = vec3(0.03) * albedo * ao;
@@ -146,4 +153,11 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     float ggx1  = GeometrySchlickGGX(NdotL, roughness);
 	
     return ggx1 * ggx2;
+}
+
+float V_SmithGGXCorrelatedFast(float NoV, float NoL, float roughness) {
+    float a = roughness;
+    float GGXV = NoL * (NoV * (1.0 - a) + a);
+    float GGXL = NoV * (NoL * (1.0 - a) + a);
+    return 0.5 / (GGXV + GGXL);
 }

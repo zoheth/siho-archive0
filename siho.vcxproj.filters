@@ -75,6 +75,9 @@
     <ClCompile Include="third_party\imgui\backends\imgui_impl_opengl3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="siho\src\IBLRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="siho\include\siho\Camera.h">
@@ -143,6 +146,9 @@
     <ClInclude Include="third_party\imgui\backends\imgui_impl_opengl3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="siho\include\siho\IBLRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="third_party\imgui\.editorconfig" />
@@ -154,6 +160,12 @@
     <None Include="shaders\post_processing.fs" />
     <None Include="shaders\blur.fs" />
     <None Include="shaders\blend.fs" />
+    <None Include="shaders\standard.fs" />
+    <None Include="shaders\cubemap.vs" />
+    <None Include="shaders\equirectangular_to_cubemap.fs" />
+    <None Include="shaders\background.vs" />
+    <None Include="shaders\background.fs" />
+    <None Include="shaders\irradiance_convolution.fs" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="third_party\imgui\LICENSE.txt" />

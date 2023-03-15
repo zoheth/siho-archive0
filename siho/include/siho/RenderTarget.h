@@ -5,6 +5,7 @@ class RenderTarget {
 public:
     RenderTarget(int width, int height);
     RenderTarget(int width, int height, int color_attachments_count);
+    RenderTarget(int width, int height, int color_attachments_count, int render_buffer_count);
 
     void bind() const;
     static void unbind();

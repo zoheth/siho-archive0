@@ -63,7 +63,19 @@ void SceneRenderPass::render()
 		glBindTexture(GL_TEXTURE_2D, shadow_map_pass_->target()->depth_stencil_buffer());
 	}
 
+	if(ibl_)
+	{
+		glActiveTexture(GL_TEXTURE6);
+		shader_.setInt("u_IrradianceMap", 6);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, ibl_->irradiance_map());
+	}
+
 	scene_.render(shader_);
+
+	if(ibl_)
+	{
+		ibl_->RenderSkybox();
+	}
 	RenderTarget::unbind();
 }
 
@@ -126,26 +138,34 @@ void BloomPass::render()
 	RenderTarget::unbind();
 }
 
+unsigned int quad_vao=0;
 void RenderQuad()
 {
-	constexpr float quad_vertices[] = {
+	if(quad_vao==0)
+	{
+		constexpr float quad_vertices[] = {
 		-1.0f,  1.0f,  0.0f,  0.0f, 1.0f,
 		-1.0f, -1.0f,  0.0f,  0.0f, 0.0f,
 		 1.0f,  1.0f,  0.0f,  1.0f, 1.0f,
 		 1.0f, -1.0f,  0.0f,  1.0f, 0.0f,
-	};
-	unsigned int quad_vao, quad_vbo;
-	glGenVertexArrays(1, &quad_vao);
-	glGenBuffers(1, &quad_vbo);
-	glBindVertexArray(quad_vao);
-	glBindBuffer(GL_ARRAY_BUFFER, quad_vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quad_vertices), &quad_vertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), static_cast<void*>(0));
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
+		};
+		unsigned int quad_vbo;
+		glGenVertexArrays(1, &quad_vao);
+		glGenBuffers(1, &quad_vbo);
+		glBindVertexArray(quad_vao);
+		glBindBuffer(GL_ARRAY_BUFFER, quad_vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(quad_vertices), &quad_vertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), static_cast<void*>(0));
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
+	}
+	else
+	{
+		glBindVertexArray(quad_vao);
+	}
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glBindVertexArray(0);
-	glDeleteVertexArrays(1, &quad_vao);
-	glDeleteBuffers(1, &quad_vbo);
+	//glDeleteVertexArrays(1, &quad_vao);
+	//glDeleteBuffers(1, &quad_vbo);
 }

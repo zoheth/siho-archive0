@@ -124,6 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="libs\sihoapp\Window.h" />
+    <ClInclude Include="siho\include\siho\IBLRenderer.h" />
     <ClInclude Include="siho\include\siho\MeshAssimp.h" />
     <ClInclude Include="siho\include\siho\Camera.h" />
     <ClInclude Include="siho\include\siho\IndexBuffer.h" />
@@ -166,6 +167,7 @@
     <ClCompile Include="libs\sihoapp\Window.cpp" />
     <ClCompile Include="samples\model.cpp" />
     <ClCompile Include="siho\src\Camera.cpp" />
+    <ClCompile Include="siho\src\IBLRenderer.cpp" />
     <ClCompile Include="siho\src\LightManager.cpp" />
     <ClCompile Include="siho\src\MessAssimp.cpp" />
     <ClCompile Include="siho\src\Renderable.cpp" />
@@ -193,12 +195,18 @@
     <ClCompile Include="third_party\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\background.fs" />
+    <None Include="shaders\background.vs" />
     <None Include="shaders\blend.fs" />
     <None Include="shaders\blur.fs" />
     <None Include="shaders\common.fs" />
     <None Include="shaders\common.vs" />
+    <None Include="shaders\cubemap.vs" />
+    <None Include="shaders\equirectangular_to_cubemap.fs" />
+    <None Include="shaders\irradiance_convolution.fs" />
     <None Include="shaders\post_processing.fs" />
     <None Include="shaders\post_processing.vs" />
+    <None Include="shaders\standard.fs" />
     <None Include="third_party\imgui\.editorconfig" />
     <None Include="third_party\imgui\.gitattributes" />
     <None Include="third_party\imgui\.gitignore" />

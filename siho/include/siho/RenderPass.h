@@ -1,6 +1,7 @@
 #pragma once
 #include "RenderTarget.h"
 #include "Shader.h"
+#include "IBLRenderer.h"
 
 class Scene;
 class Camera;
@@ -70,9 +71,11 @@ public:
 
     void render() override;
 	void SetShadowMapPass(ShadowMapPass* shadow_map_pass) { shadow_map_pass_ = shadow_map_pass; }
+	void SetIblRenderer(IBLRenderer* ibl) { ibl_ = ibl; }
 
 private:
 	Scene& scene_;
+	IBLRenderer* ibl_=nullptr;
     ShadowMapPass* shadow_map_pass_=nullptr;
 };
 

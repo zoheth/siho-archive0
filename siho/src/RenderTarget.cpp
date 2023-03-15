@@ -17,6 +17,12 @@ RenderTarget::RenderTarget(int width, int height, int color_attachments_count)
 	CreateFrameBuffer(color_attachments_count);
 }
 
+RenderTarget::RenderTarget(int width, int height, int color_attachments_count, int render_buffer_count)
+    : width_(width), height_(height)
+{
+    CreateFrameBuffer(color_attachments_count, render_buffer_count);
+}
+
 
 void RenderTarget::bind() const
 {

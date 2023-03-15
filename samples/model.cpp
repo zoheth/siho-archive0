@@ -6,6 +6,7 @@
 #include <siho/MeshAssimp.h>
 #include <siho/Scene.h>
 #include <siho/Camera.h>
+#include <siho/IBLRenderer.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -26,16 +27,18 @@ int main(void)
 
 	MeshAssimp mesh_assimp;
 	//mesh_assimp.LoadModel("E:\\Study\\OpenGL\\Project0\\Models\\Girl\\untitled.obj.ass");
-	mesh_assimp.LoadModel("C:\\3D Models\\Helmet\\untitled.gltf");
+	mesh_assimp.LoadModel("assets\\Helmet\\untitled.gltf");
+	//mesh_assimp.LoadModel("C:\\3D Models\\lamp\\lamp.gltf");
 
 	Scene scene;
 	scene.set_renderables(mesh_assimp.renderables());
 
 	scene.AddLight(PointLight{
-		glm::vec3(0.0f, 10.0f, -1.0f),
+		glm::vec3(2.0f, 3.0f, 2.0f),
 		glm::vec3(1.0f, 1.0f, 1.0f),
-		250.0f });
-	Shader scene_shader("shaders\\common.vs", "shaders\\common.fs");
+		200.0f });
+	//Shader scene_shader("shaders\\common.vs", "shaders\\common.fs");
+	Shader scene_shader("shaders\\common.vs", "shaders\\standard.fs");
 
 	Shader process_shader("shaders\\post_processing.vs", "shaders\\post_processing.fs");
 	Shader blur_shader("shaders\\post_processing.vs", "shaders\\blur.fs");
@@ -52,12 +55,14 @@ int main(void)
 
 	window.SetCamera(&camera);
 
+	IBLRenderer ibl("assets\\hdr\\newport_loft.hdr", camera);
 
 	RenderTarget scene_render_target(width, height, 2);
 	RenderTarget blurRenderTarget(width, height);
 	RenderTarget bloomRenderTarget(width, height);
 
 	SceneRenderPass scene_pass(&scene_render_target, scene_shader, scene);
+	scene_pass.SetIblRenderer(&ibl);
 
 	BlurPass blur_pass(&blurRenderTarget, blur_shader, scene_pass);
 
@@ -68,6 +73,8 @@ int main(void)
 	BloomPass bloom_pass(&bloomRenderTarget, blend_shader, blur_pass);
 
 	FinalRenderPass final_pass(nullptr, process_shader, bloom_pass);
+
+
 
 
 	glEnable(GL_DEPTH_TEST);
@@ -82,6 +89,7 @@ int main(void)
 
 		//scene_pass.render();
 		final_pass.render();
+		//ibl.RenderSkybox();
 
 		window.DrawUi();
 
