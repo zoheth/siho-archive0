@@ -65,9 +65,17 @@ void SceneRenderPass::render()
 
 	if(ibl_)
 	{
-		glActiveTexture(GL_TEXTURE6);
-		shader_.setInt("u_IrradianceMap", 6);
+		glActiveTexture(GL_TEXTURE1);
+		shader_.setInt("u_IrradianceMap", 1);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, ibl_->irradiance_map());
+
+		glActiveTexture(GL_TEXTURE2);
+		shader_.setInt("u_PrefilterMap", 2);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, ibl_->prefilter_map());
+
+		glActiveTexture(GL_TEXTURE3);
+		shader_.setInt("u_BrdfLUT", 3);
+		glBindTexture(GL_TEXTURE_2D, ibl_->brdf_lut_texture());
 	}
 
 	scene_.render(shader_);

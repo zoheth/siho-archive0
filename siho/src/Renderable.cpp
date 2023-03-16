@@ -15,28 +15,28 @@ void Renderable::SetMaterialUniforms(UniformObject& uniform_object)
 
 	unsigned int slot = texture_slot_;
 
-	uniform_object.set(uniforms::kEmissiveTexture, 4);
+	uniform_object.set(uniforms::kEmissiveTexture, 7);
 	if (!material_->textures_emissive.empty())
 	{
-		material_->textures_emissive[0].Bind(4);
+		material_->textures_emissive[0].Bind(7);
 	}
 
-	uniform_object.set(uniforms::kNormalTexture, 3);
+	uniform_object.set(uniforms::kNormalTexture, 6);
 	if (!material_->textures_normal.empty())
 	{
-		material_->textures_normal[0].Bind(3);
+		material_->textures_normal[0].Bind(6);
 	}
 
-	uniform_object.set(uniforms::kBaseColorTexture, 1);
+	uniform_object.set(uniforms::kBaseColorTexture, 4);
 	if(!material_->textures_base_color.empty())
 	{
-		material_->textures_base_color[0].Bind(1);
+		material_->textures_base_color[0].Bind(4);
 	}
 
-	uniform_object.set(uniforms::kMetallicRoughnessTexture, 2);
+	uniform_object.set(uniforms::kMetallicRoughnessTexture, 5);
 	if(!material_->textures_roughness.empty())
 	{
-		material_->textures_roughness[0].Bind(2);
+		material_->textures_roughness[0].Bind(5);
 	}
 }
 

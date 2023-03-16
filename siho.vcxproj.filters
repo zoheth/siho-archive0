@@ -166,6 +166,9 @@
     <None Include="shaders\background.vs" />
     <None Include="shaders\background.fs" />
     <None Include="shaders\irradiance_convolution.fs" />
+    <None Include="shaders\prefilter.fs" />
+    <None Include="shaders\brdf.vs" />
+    <None Include="shaders\brdf.fs" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="third_party\imgui\LICENSE.txt" />

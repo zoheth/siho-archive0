@@ -71,6 +71,18 @@ void Window::SwapBuffers() const
 
 void Window::DrawUi() const
 {
+	ImGui::SetNextWindowPos(ImVec2(0, 0)); // Set the window position to the top-left corner
+	ImGui::SetNextWindowSize(ImVec2(100, 50)); // Set the window size to 100x50 pixels
+	ImGui::Begin("FPS", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+
+	// Get the current FPS value from imgui
+	float fps = ImGui::GetIO().Framerate;
+
+	// Display the FPS value with some formatting
+	ImGui::Text("FPS: %.1f", fps);
+
+	// End the window
+	ImGui::End();
 	ImGui::Render();
 	int display_w, display_h;
 	glfwGetFramebufferSize(glfw_window_, &display_w, &display_h);
@@ -86,6 +98,7 @@ void Window::SetCamera(Camera* camera)
 void Window::ShowLightEditorWindow(Scene& scene)
 {
 	ImGui::Begin("Light Editor", &show_light_editor_);
+
 	if (ImGui::Button("Add Light")) {
 		scene.AddLight(PointLight{
 			glm::vec3(0.0f, 10.0f, 10.0f),

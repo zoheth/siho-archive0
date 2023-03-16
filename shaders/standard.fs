@@ -2,7 +2,7 @@
 in vec3 worldPos;
 in vec3 worldNormal;
 in vec2 texCoord;
-in mat3 TBN;
+//in mat3 TBN;
 
 
 layout (location = 0) out vec4 fragColor;
@@ -33,12 +33,31 @@ uniform int u_PointLightsCount;
 uniform vec3 u_CamPos;
 
 uniform samplerCube u_IrradianceMap;
+uniform samplerCube u_PrefilterMap;
+uniform sampler2D u_BrdfLUT;
 
 const float PI = 3.14159265359;
 
 vec3 F_Schlick(float u, vec3 f0);
 vec3 BRDF(vec3 baseColor, vec3 n, vec3 v, vec3 l, vec3 f0, float perceptualRoughness, float metallic);
 
+
+vec3 GetNormalFromMap()
+{
+    vec3 tangentNormal = texture(u_Material.normalTexture, texCoord).xyz * 2.0 - 1.0;
+
+    vec3 Q1  = dFdx(worldPos);
+    vec3 Q2  = dFdy(worldPos);
+    vec2 st1 = dFdx(texCoord);
+    vec2 st2 = dFdy(texCoord);
+
+    vec3 N   = normalize(worldNormal);
+    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
+    vec3 B  = -normalize(cross(N, T));
+    mat3 TBN = mat3(T, B, N);
+
+    return normalize(TBN * tangentNormal);
+}
 
 void main()
 {
@@ -63,9 +82,10 @@ void main()
         emissive = pow(texture(u_Material.emissiveTexture, texCoord).rgb, vec3(2.2)) * 10;
     }
 
-    vec3 N = normalize(texture(u_Material.normalTexture, texCoord).rgb * 2.0 - 1.0);
-    vec3 viewPos = TBN * u_CamPos;
-    vec3 fragPos = TBN * worldPos;
+    //vec3 N = normalize(texture(u_Material.normalTexture, texCoord).rgb * 2.0 - 1.0);
+    vec3 N = GetNormalFromMap();
+    vec3 viewPos = u_CamPos;
+    vec3 fragPos = worldPos;
     vec3 V = normalize(viewPos - fragPos);
 
     //fragColor = vec4(V, 1.0);
@@ -77,7 +97,7 @@ void main()
     vec3 Lo = vec3(0.0);
     for(int i = 0; i<u_PointLightsCount; ++i)
     {
-        vec3 L = TBN * u_PointLights[i].position - fragPos;
+        vec3 L = u_PointLights[i].position - fragPos;
         float distance = length(L);
         L = normalize(L);
         
@@ -96,10 +116,20 @@ void main()
     vec3 kD = 1.0 - kS;
     kD *= 1.0 - metallic;
     vec3 irradiance = texture(u_IrradianceMap, worldNormal).rgb;
+    vec3 diffuse = irradiance * albedo;
 
-    vec3 ambient = kD * irradiance * albedo * ao;
-    vec3 color = ambient + Lo + emissive;
-	
+    const float MAX_REFLECTION_LOD = 4.0;
+    vec3 R = reflect(-V, N); 
+    vec3 prefilteredColor = textureLod(u_PrefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb;    
+    vec2 brdf  = texture(u_BrdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
+    vec3 specular = prefilteredColor * (kS * brdf.x + brdf.y);
+    
+    vec3 ambient = (kD * diffuse + specular) * ao;
+
+
+
+    vec3 color = ambient  + Lo + emissive;
+
     //color = color / (color + vec3(1.0));
     //color = pow(color, vec3(1.0/2.2));  
    

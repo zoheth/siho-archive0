@@ -199,6 +199,8 @@
     <None Include="shaders\background.vs" />
     <None Include="shaders\blend.fs" />
     <None Include="shaders\blur.fs" />
+    <None Include="shaders\brdf.fs" />
+    <None Include="shaders\brdf.vs" />
     <None Include="shaders\common.fs" />
     <None Include="shaders\common.vs" />
     <None Include="shaders\cubemap.vs" />
@@ -206,6 +208,7 @@
     <None Include="shaders\irradiance_convolution.fs" />
     <None Include="shaders\post_processing.fs" />
     <None Include="shaders\post_processing.vs" />
+    <None Include="shaders\prefilter.fs" />
     <None Include="shaders\standard.fs" />
     <None Include="third_party\imgui\.editorconfig" />
     <None Include="third_party\imgui\.gitattributes" />
