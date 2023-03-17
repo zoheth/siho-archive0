@@ -56,7 +56,9 @@ public:
 
     void setup();
 
-    void render(Shader& shader, UniformObject uniform_object);
+    void render(const Shader& shader, UniformObject uniform_object);
+
+    void PureRender(const Shader& shader) const;
 
 private:
     std::vector<Vertex> vertices_;

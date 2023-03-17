@@ -169,6 +169,9 @@
     <None Include="shaders\prefilter.fs" />
     <None Include="shaders\brdf.vs" />
     <None Include="shaders\brdf.fs" />
+    <None Include="shaders\shadow.fs" />
+    <None Include="shaders\shadow.vs" />
+    <None Include="shaders\shadow.gs" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="third_party\imgui\LICENSE.txt" />

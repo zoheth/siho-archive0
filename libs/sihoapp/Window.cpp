@@ -41,6 +41,7 @@ Window::Window(int width, int height, const std::string& title)
 	});
 
 	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_CULL_FACE);
 
 	InitUi();
 }
@@ -121,7 +122,7 @@ void Window::ShowLightEditorWindow(Scene& scene)
 			ImGui::SliderFloat3("Position", reinterpret_cast<float*>(&light.position), -10.0f, 10.0f);
 			ImGui::ColorEdit3("Color", reinterpret_cast<float*>(&light.color));
 			ImGui::SliderAngle("Rotation", &light.angle_y, 0.0f, 360.0f);
-			ImGui::DragFloat("Intensity", &light.intensity);
+			ImGui::DragFloat("Intensity", &light.intensity, 1, 1, 2000);
 		}
 		ImGui::PopID();
 	}

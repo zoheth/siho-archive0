@@ -85,7 +85,7 @@ void Renderable::setup()
 	glBindVertexArray(0);
 }
 
-void Renderable::render(Shader& shader, UniformObject uniform_object)
+void Renderable::render(const Shader& shader, UniformObject uniform_object)
 {
 	SetMaterialUniforms(uniform_object);
 
@@ -110,4 +110,15 @@ void Renderable::render(Shader& shader, UniformObject uniform_object)
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	Texture::Unbind();
+}
+
+void Renderable::PureRender(const Shader& shader) const
+{
+	shader.use();
+	glBindVertexArray(vao_);
+	if (indices_.empty())
+		glDrawArrays(GL_TRIANGLES, 0, vertices_.size());
+	else
+		glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
 }

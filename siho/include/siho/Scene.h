@@ -14,7 +14,7 @@ public:
 	void AddRenderable(const Renderable& renderable) { renderables_.push_back(renderable); }
     void AddLight(const PointLight& light) { light_manager_.AddPointLight(light); }
 
-    void render(Shader& shader) {
+    void render(const Shader& shader) {
         // 设置光源uniform
         light_manager_.SetUniforms(uniform_obj_);
 
@@ -23,6 +23,14 @@ public:
             renderable.render(shader, uniform_obj_);
         }
     }
+    void PureRender(const Shader& shader) const
+    {
+        uniform_obj_.apply(shader);
+        for (auto& renderable : renderables_) {
+
+            renderable.PureRender(shader);
+        }
+	}
     void set_renderables(std::vector<Renderable>&& renderables) { renderables_ = std::move(renderables); }
     void set_uniform_obj(UniformObject uniform_object)
 	{

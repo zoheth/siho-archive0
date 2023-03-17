@@ -7,13 +7,13 @@ void RenderQuad();
 
 void FinalRenderPass::render()
 {
-	prev_render_pass_.render();
+	prev_render_pass_->render();
 	glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
 	shader_.use();
 	shader_.setInt(uniforms::kScreenTexture, 0);
 	glDisable(GL_DEPTH_TEST);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, prev_render_pass_.target()->color_buffer());
+	glBindTexture(GL_TEXTURE_2D, prev_render_pass_->target()->color_buffer());
 	RenderQuad();
 	glEnable(GL_DEPTH_TEST);
 }
@@ -39,9 +39,23 @@ void ShadowMapPass::render()
 {
 	target_->bind();
 	glClear(GL_DEPTH_BUFFER_BIT);
+	const glm::vec3 light_pos = scene_.point_light(0).position;
+	constexpr float near_plane = 1.0f;
+	constexpr float far_plane = 25.0f;
+	const glm::mat4 shadow_proj = glm::perspective(glm::radians(90.0f), 1.0f, near_plane, far_plane);
+	std::vector<glm::mat4> shadow_transforms;
+	shadow_transforms.push_back(shadow_proj * glm::lookAt(light_pos, light_pos + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+	shadow_transforms.push_back(shadow_proj * glm::lookAt(light_pos, light_pos + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+	shadow_transforms.push_back(shadow_proj * glm::lookAt(light_pos, light_pos + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+	shadow_transforms.push_back(shadow_proj * glm::lookAt(light_pos, light_pos + glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
+	shadow_transforms.push_back(shadow_proj * glm::lookAt(light_pos, light_pos + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+	shadow_transforms.push_back(shadow_proj * glm::lookAt(light_pos, light_pos + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
 	shader_.use();
+	shader_.setVec3("u_LightPos", light_pos);
+	for (unsigned int i = 0; i < 6; ++i)
+		shader_.setMat4("u_ShadowMatrices[" + std::to_string(i) + "]", shadow_transforms[i]);
 
-	scene_.render(shader_);
+	scene_.PureRender(shader_);
 	RenderTarget::unbind();
 }
 
@@ -60,7 +74,14 @@ void SceneRenderPass::render()
 	if(shadow_map_pass_)
 	{
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, shadow_map_pass_->target()->depth_stencil_buffer());
+		shader_.setInt("u_DepthMap", 0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, shadow_map_pass_->target()->depth_stencil_buffer());
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, ibl_->brdf_lut_texture());
+		shader_.setInt("shadows", 1);
+	}
+	else
+	{
+		shader_.setInt("shadows", 0);
 	}
 
 	if(ibl_)
@@ -77,9 +98,9 @@ void SceneRenderPass::render()
 		shader_.setInt("u_BrdfLUT", 3);
 		glBindTexture(GL_TEXTURE_2D, ibl_->brdf_lut_texture());
 	}
-
+	glEnable(GL_CULL_FACE);
 	scene_.render(shader_);
-
+	glDisable(GL_CULL_FACE);
 	if(ibl_)
 	{
 		ibl_->RenderSkybox();

@@ -12,25 +12,30 @@ public:
 	RenderPass(RenderTarget* target, Shader& shader) : shader_(shader), target_(target) {}
     virtual void render() = 0;
 
+	void Enable() { enable_ = true; }
+	void Disable() { enable_ = false; }
+
     [[nodiscard]] Shader& shader() const { return shader_; }
     [[nodiscard]] RenderTarget* target() const { return target_; }
 protected:
     Shader& shader_;
     RenderTarget* target_=nullptr;
+	bool enable_ = true;
 };
 
 
 class FinalRenderPass final : public RenderPass
 {
 	public:
-	FinalRenderPass(RenderTarget* target, Shader& shader, RenderPass& prev_render_pass)
+	FinalRenderPass(RenderTarget* target, Shader& shader, RenderPass* prev_render_pass)
 		: RenderPass(target, shader), prev_render_pass_(prev_render_pass)
 	{
 	}
+	void set_prev_pass(RenderPass* prev_render_pass) { prev_render_pass_ = prev_render_pass; }
 
 	void render() override;
 private:
-	RenderPass& prev_render_pass_;
+	RenderPass* prev_render_pass_;
 };
 
 
@@ -86,7 +91,7 @@ public:
 	BlurPass(RenderTarget* target, Shader& shader, SceneRenderPass& scene_render_pass)
 		: RenderPass(target, shader), scene_render_pass_(scene_render_pass)
 	{
-		other_target_ = new RenderTarget(target->width(), target->height());
+		other_target_ = new RenderTarget(target->width(), target->height(), 1, 1);
 	}
 	void render() override;
 	[[nodiscard]] RenderTarget* scene_render_target() const { return scene_render_pass_.target(); }

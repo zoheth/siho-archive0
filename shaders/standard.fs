@@ -36,28 +36,17 @@ uniform samplerCube u_IrradianceMap;
 uniform samplerCube u_PrefilterMap;
 uniform sampler2D u_BrdfLUT;
 
+uniform samplerCube u_DepthMap;
+uniform bool shadows;
+
 const float PI = 3.14159265359;
 
 vec3 F_Schlick(float u, vec3 f0);
 vec3 BRDF(vec3 baseColor, vec3 n, vec3 v, vec3 l, vec3 f0, float perceptualRoughness, float metallic);
 
 
-vec3 GetNormalFromMap()
-{
-    vec3 tangentNormal = texture(u_Material.normalTexture, texCoord).xyz * 2.0 - 1.0;
-
-    vec3 Q1  = dFdx(worldPos);
-    vec3 Q2  = dFdy(worldPos);
-    vec2 st1 = dFdx(texCoord);
-    vec2 st2 = dFdy(texCoord);
-
-    vec3 N   = normalize(worldNormal);
-    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
-    vec3 B  = -normalize(cross(N, T));
-    mat3 TBN = mat3(T, B, N);
-
-    return normalize(TBN * tangentNormal);
-}
+vec3 GetNormalFromMap();
+float ShadowCalculation(vec3 normal, vec3 fragPos, vec3 lightPos);
 
 void main()
 {
@@ -88,9 +77,6 @@ void main()
     vec3 fragPos = worldPos;
     vec3 V = normalize(viewPos - fragPos);
 
-    //fragColor = vec4(V, 1.0);
-    //return;
-
     vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
 
@@ -108,8 +94,19 @@ void main()
         F0 = mix(F0, albedo, metallic);
 
         float NdotL = max(dot(N, L), 0.0);    
-        vec3 brdf = BRDF(albedo,N,V,L,F0,roughness,metallic);            
-        Lo += brdf * radiance * NdotL; 
+        vec3 brdf = BRDF(albedo,N,V,L,F0,roughness,metallic);
+        
+        if(i==0)
+        {
+            float shadow = shadows ? ShadowCalculation(worldNormal, worldPos, u_PointLights[i].position) : 0.0; 
+            Lo += (1-shadow)*(brdf * radiance * NdotL);
+            //fragColor=vec4(vec3(1-shadow),1);
+            //return;
+        }
+        else
+        {
+            Lo += brdf * radiance * NdotL; 
+        }
     }
 
     vec3 kS = F_Schlick(max(dot(N, V), 0.0), F0);
@@ -129,7 +126,6 @@ void main()
 
 
     vec3 color = ambient  + Lo + emissive;
-
     //color = color / (color + vec3(1.0));
     //color = pow(color, vec3(1.0/2.2));  
    
@@ -203,4 +199,52 @@ vec3 BRDF(vec3 baseColor, vec3 n, vec3 v, vec3 l, vec3 f0, float perceptualRough
     vec3 Fd = baseColor * Fd_Burley(NoV,NoL,LoH,roughness) * kD;
 
     return Fr+Fd;
+}
+
+
+vec3 GetNormalFromMap()
+{
+    vec3 tangentNormal = texture(u_Material.normalTexture, texCoord).xyz * 2.0 - 1.0;
+
+    vec3 Q1  = dFdx(worldPos);
+    vec3 Q2  = dFdy(worldPos);
+    vec2 st1 = dFdx(texCoord);
+    vec2 st2 = dFdy(texCoord);
+
+    vec3 N   = normalize(worldNormal);
+    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
+    vec3 B  = -normalize(cross(N, T));
+    mat3 TBN = mat3(T, B, N);
+
+    return normalize(TBN * tangentNormal);
+}
+
+vec3 gridSamplingDisk[20] = vec3[]
+(
+   vec3(1, 1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1, 1,  1), 
+   vec3(1, 1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1, 1, -1),
+   vec3(1, 1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1, 1,  0),
+   vec3(1, 0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1, 0, -1),
+   vec3(0, 1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0, 1, -1)
+);
+float far_plane=25.0f;
+
+float ShadowCalculation(vec3 normal, vec3 fragPos, vec3 lightPos)
+{
+    vec3 fragToLight = fragPos - lightPos;
+    float currentDepth = length(fragToLight);
+    float shadow = 0.0;
+    float bias = max(0.05 * (1.0 - dot(normal, fragToLight)), 0.005);  
+    int samples = 20;
+    float viewDistance = length(u_CamPos - fragPos);
+    float diskRadius = (1.0 + (viewDistance / far_plane)) / far_plane;
+    for(int i = 0; i < samples; ++i)
+    {
+        float closestDepth = texture(u_DepthMap, fragToLight + gridSamplingDisk[i] * diskRadius).r;
+        closestDepth *= far_plane;  
+        if(currentDepth - bias > closestDepth)
+            shadow += 1.0;
+    }
+    shadow /= float(samples);
+    return shadow;
 }

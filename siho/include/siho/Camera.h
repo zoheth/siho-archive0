@@ -14,8 +14,8 @@ enum CameraMovement {
 // Default camera values
 constexpr double kYaw = -90.0;
 constexpr double kPitch = 0.0;
-constexpr double kSpeed = 2.5;
-constexpr double kSensitivity = 0.05;
+constexpr double kSpeed = 1.2;
+constexpr double kSensitivity = 0.03;
 constexpr double kZoom = 45.0;
 
 

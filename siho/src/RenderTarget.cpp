@@ -7,14 +7,6 @@
 RenderTarget::RenderTarget(const int width, const int height)
     : width_(width), height_(height)
 {
-    CreateFrameBuffer();
-}
-
-RenderTarget::RenderTarget(int width, int height, int color_attachments_count)
-{
-	width_ = width;
-	height_ = height;
-	CreateFrameBuffer(color_attachments_count);
 }
 
 RenderTarget::RenderTarget(int width, int height, int color_attachments_count, int render_buffer_count)
@@ -33,6 +25,33 @@ void RenderTarget::bind() const
 void RenderTarget::unbind()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+RenderTarget* RenderTarget::CreateShadowTarget(int width, int height)
+{
+	auto* target = new RenderTarget(width, height);
+    glGenFramebuffers(1, &target->fbo_);
+
+    unsigned int depth_cubemap;
+    glGenTextures(1, &depth_cubemap);
+    target->depth_stencil_buffers_.push_back(depth_cubemap);
+
+    glBindTexture(GL_TEXTURE_CUBE_MAP, depth_cubemap);
+    for (unsigned int i = 0; i < 6; ++i)
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
+            width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, target->fbo_);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depth_cubemap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    return target;
 }
 
 void RenderTarget::CreateFrameBuffer(unsigned int color_attachments_count, unsigned int render_buffer_count)
